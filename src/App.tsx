@@ -59,6 +59,13 @@ const pileDiscardUrl = new URL("../assets/vendor/shushan/icon-talisman-paper.png
 const relicIconUrl = new URL("../assets/vendor/shushan/relic-umbrella.png", import.meta.url).href;
 const goldIconUrl = new URL("../assets/vendor/shushan/icon-bagua-gold.png", import.meta.url).href;
 const mapIconUrl = new URL("../assets/vendor/aigei/pile-draw.png", import.meta.url).href;
+const costGemUrls: Record<string, string> = {
+  empty: new URL("../assets/vendor/shushan/cost/cost-empty.png", import.meta.url).href,
+  "0": new URL("../assets/vendor/shushan/cost/cost-0.png", import.meta.url).href,
+  "1": new URL("../assets/vendor/shushan/cost/cost-1.png", import.meta.url).href,
+  "2": new URL("../assets/vendor/shushan/cost/cost-2.png", import.meta.url).href,
+  "3": new URL("../assets/vendor/shushan/cost/cost-3.png", import.meta.url).href,
+};
 const playerNightPatrolUrl = new URL("../assets/generated/characters/player-night-patrol.png", import.meta.url).href;
 const sceneLoopVideoUrl = new URL("../assets/generated/backgrounds/night-temple-loop.mp4", import.meta.url).href;
 const enemyArtUrls: Record<string, string> = {
@@ -263,7 +270,7 @@ function TopHud({
           <>
             <HudChip icon={<img className="hud-asset-icon" src={pileDrawUrl} alt="" draggable={false} />} label={`牌组 ${player.deck.length}`} />
             <HudChip icon={<img className="hud-asset-icon" src={relicIconUrl} alt="" draggable={false} />} label={`遗物 ${player.relics.length}`} />
-            <HudChip icon={<img className="hud-asset-icon hud-map-icon" src={mapIconUrl} alt="" draggable={false} />} label={`${Math.min(game.floor + 1, 8)}/8`} tone="map" />
+            <HudChip icon={<img className="hud-asset-icon hud-map-icon" src={mapIconUrl} alt="" draggable={false} />} label={`地图 ${Math.min(game.floor + 1, 8)}/8`} tone="map" />
           </>
         ) : (
           <span className="hud-title">夜巡录：荒庙篇</span>
@@ -599,12 +606,14 @@ function CombatScreen({ game, onPlayCard, onEndTurn }: { game: GameState; onPlay
         <button className="end-turn" type="button" onClick={onEndTurn}>
           <SkipForward /> 结束回合
         </button>
-        <div className="pile-counters pile-left" title={`弃牌 ${combat.discardPile.length}`} aria-label={`弃牌 ${combat.discardPile.length}`}>
+        <div className="pile-counters pile-left" title={`已弃牌 ${combat.discardPile.length}`} aria-label={`已弃牌 ${combat.discardPile.length}`}>
           <img src={pileDiscardUrl} alt="" draggable={false} />
+          <span>已弃牌</span>
           <strong>{combat.discardPile.length}</strong>
         </div>
-        <div className="pile-counters pile-right" title={`抽牌 ${combat.drawPile.length}`} aria-label={`抽牌 ${combat.drawPile.length}`}>
+        <div className="pile-counters pile-right" title={`牌库 ${combat.drawPile.length}`} aria-label={`牌库 ${combat.drawPile.length}`}>
           <img src={pileDrawUrl} alt="" draggable={false} />
+          <span>牌库</span>
           <strong>{combat.drawPile.length}</strong>
         </div>
         <div className="hand-fan" style={{ "--hand-count": combat.hand.length } as CSSProperties}>
@@ -683,6 +692,7 @@ function GameCard({
   onPointerCancel?: () => void;
 }) {
   const def = cardDef(card);
+  const costKey = typeof def.cost === "number" ? String(Math.min(def.cost, 3)) : "empty";
   const center = (count - 1) / 2;
   const rotate = (index - center) * 5.5;
   const lift = Math.abs(index - center) * 9;
@@ -711,7 +721,10 @@ function GameCard({
       onPointerUp={onPointerUp}
       onPointerCancel={onPointerCancel}
     >
-      <div className="card-cost">{def.cost}</div>
+      <div className={`card-cost card-cost-${costKey}`}>
+        <img src={costGemUrls[costKey]} alt="" draggable={false} />
+        <strong>{def.cost}</strong>
+      </div>
       <div className="card-title">{cardName(card)}</div>
       <div className="card-art-window">
         <img className={`card-art-icon card-art-icon-${def.type}`} src={cardArtImage(card)} alt="" draggable={false} />

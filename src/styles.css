@@ -1419,8 +1419,8 @@ button:focus-visible {
 .pile-counters {
   position: absolute;
   bottom: 3vh;
-  width: 78px;
-  height: 102px;
+  width: 86px;
+  height: 118px;
   border: 0;
   border-radius: 0;
   background: transparent;
@@ -1428,17 +1428,27 @@ button:focus-visible {
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  gap: 4px;
+  gap: 1px;
   color: var(--paper);
   box-shadow: none;
   pointer-events: auto;
 }
 
 .pile-counters img {
-  width: 62px;
-  height: 62px;
+  width: 58px;
+  height: 58px;
   object-fit: contain;
   filter: drop-shadow(0 7px 5px rgba(0, 0, 0, 0.48));
+}
+
+.pile-counters span {
+  margin-top: -3px;
+  color: rgba(255, 239, 207, 0.86);
+  font-size: 0.78rem;
+  font-weight: 900;
+  line-height: 1;
+  text-shadow: 0 3px 4px rgba(0, 0, 0, 0.85), 0 0 8px rgba(255, 219, 128, 0.22);
+  white-space: nowrap;
 }
 
 .pile-counters strong {
@@ -1553,27 +1563,54 @@ button:focus-visible {
 
 .card-cost {
   position: absolute;
-  top: 8px;
-  left: 8px;
-  width: 36px;
-  height: 36px;
+  top: -6px;
+  left: -7px;
+  width: 56px;
+  height: 56px;
   display: grid;
   place-items: center;
-  border-radius: 9px;
-  border: 2px solid rgba(255, 231, 157, 0.34);
-  background:
-    radial-gradient(circle at 35% 30%, #9ff7ef, #367f99 54%, #16263b),
-    #367f99;
+  border: 0;
+  background: transparent;
   color: #efffff;
-  font-size: 1.22rem;
-  font-weight: 900;
-  text-shadow: 0 2px 0 rgba(0, 0, 0, 0.3);
   z-index: 2;
+  pointer-events: none;
+}
+
+.card-cost img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 5px 4px rgba(0, 0, 0, 0.58)) saturate(1.08);
+}
+
+.card-cost strong {
+  position: relative;
+  z-index: 1;
+  margin-top: -1px;
+  color: #f5ffff;
+  font-size: 1.28rem;
+  font-weight: 1000;
+  line-height: 1;
+  text-shadow:
+    0 2px 0 rgba(0, 0, 0, 0.62),
+    0 0 8px rgba(92, 238, 230, 0.5);
+}
+
+.card-cost-empty strong {
+  font-size: 1.08rem;
+  color: rgba(239, 255, 255, 0.72);
+}
+
+.card-cost-2 img,
+.card-cost-3 img {
+  transform: scale(1.08);
 }
 
 .card-title {
   height: 30px;
-  margin-left: 38px;
+  margin-left: 44px;
   display: grid;
   align-items: center;
   color: #fff2cb;
