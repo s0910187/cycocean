@@ -417,7 +417,32 @@ button:focus-visible {
 }
 
 .choice-view {
+  position: relative;
+  overflow: hidden;
   grid-template-columns: minmax(0, 1fr) 270px;
+  background: #07100f;
+}
+
+.choice-view::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(130, 213, 199, 0.08), transparent 36%),
+    linear-gradient(180deg, rgba(5, 8, 8, 0.22), rgba(5, 8, 8, 0.68));
+  pointer-events: none;
+}
+
+.ambient-scene-video {
+  z-index: 0;
+  opacity: 0.9;
+  filter: saturate(0.92) brightness(0.8);
+}
+
+.choice-view > :not(.ambient-scene-video) {
+  position: relative;
+  z-index: 2;
 }
 
 .route-map-panel,
@@ -746,14 +771,14 @@ button:focus-visible {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(circle at 50% 50%, rgba(130, 213, 199, 0.12), transparent 38%),
-    linear-gradient(180deg, rgba(5, 8, 8, 0.2), rgba(5, 8, 8, 0.72));
+    radial-gradient(circle at 50% 50%, rgba(130, 213, 199, 0.07), transparent 38%),
+    linear-gradient(180deg, rgba(5, 8, 8, 0.08), rgba(5, 8, 8, 0.52));
   pointer-events: none;
 }
 
 .loading-loop-video {
   opacity: 1;
-  filter: saturate(0.94) brightness(0.82);
+  filter: saturate(0.96) brightness(0.9);
 }
 
 .loading-copy {

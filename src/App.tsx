@@ -367,6 +367,10 @@ function LoadingScreen({ difficulty }: { difficulty: Difficulty }) {
   );
 }
 
+function AmbientSceneVideo() {
+  return <video className="scene-loop-video ambient-scene-video" src={sceneLoopVideoUrl} autoPlay loop muted playsInline />;
+}
+
 function MapScreen({ game, onChoose }: { game: GameState; onChoose: (nodeId: string) => void }) {
   const rows = routeNames.map((_, row) => game.mapNodes.filter((node) => node.row === row).sort((a, b) => a.lane - b.lane));
   const available = new Set(game.availableNodeIds);
@@ -841,6 +845,7 @@ function RewardScreen({ game, onTake, onSkip }: { game: GameState; onTake: (uid:
   const reward = game.reward!;
   return (
     <section className="choice-view">
+      <AmbientSceneVideo />
       <div className="choice-header">
         <p className="eyebrow">战斗奖励</p>
         <h2>{reward.title}</h2>
@@ -862,6 +867,7 @@ function EventScreen({ game, onChoice }: { game: GameState; onChoice: (choice: s
   const event = game.event!;
   return (
     <section className="choice-view event-view">
+      <AmbientSceneVideo />
       <div className="choice-header">
         <p className="eyebrow">怪事</p>
         <h2>{event.title}</h2>
@@ -883,6 +889,7 @@ function EventScreen({ game, onChoice }: { game: GameState; onChoice: (choice: s
 function RestScreen({ onHeal, onUpgrade }: { onHeal: () => void; onUpgrade: () => void }) {
   return (
     <section className="choice-view">
+      <AmbientSceneVideo />
       <div className="choice-header">
         <p className="eyebrow">休整</p>
         <h2>残灯休整</h2>
@@ -913,6 +920,7 @@ function ShopScreen({
   const gold = game.player!.gold;
   return (
     <section className="choice-view">
+      <AmbientSceneVideo />
       <div className="choice-header">
         <p className="eyebrow">商店</p>
         <h2>阴市灯摊</h2>
@@ -959,6 +967,7 @@ function DeckPickScreen({
 }) {
   return (
     <section className="choice-view">
+      <AmbientSceneVideo />
       <div className="choice-header">
         <p className="eyebrow">牌组</p>
         <h2>{title}</h2>
