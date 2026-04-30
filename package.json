@@ -5,6 +5,10 @@
   "description": "志怪题材卡牌构筑 roguelike demo",
   "main": "electron/main.cjs",
   "author": "Guohao and Codex",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/op7418/Night-Patrol.git"
+  },
   "type": "module",
   "scripts": {
     "dev": "vite --host 127.0.0.1",
