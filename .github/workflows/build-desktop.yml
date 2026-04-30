@@ -49,6 +49,16 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
+          name: 夜巡录：荒庙篇 ${{ github.ref_name }}
+          prerelease: true
+          body: |
+            《夜巡录：荒庙篇》第一关竖切 demo 客户端测试包。
+
+            本版本包含标题页、分岔地图、普通战、精英战、怪事、商店、休整、Boss 战、战利品与结算视频。
+
+            macOS 包目前使用 ad-hoc 签名，没有 Apple 公证。如果提示“无法验证开发者”，请右键点击应用，选择“打开”。
+
+            Windows 包如果触发 SmartScreen，请点击“更多信息” -> “仍要运行”。
           files: |
             release/*.dmg
             release/*.zip
