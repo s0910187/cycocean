@@ -2,6 +2,7 @@ export type Screen =
   | "title"
   | "map"
   | "combat"
+  | "cinematic"
   | "reward"
   | "event"
   | "rest"
@@ -128,6 +129,22 @@ export interface RewardState {
   cards: CardInstance[];
 }
 
+export interface CinematicState {
+  enemyId: string;
+  enemyName: string;
+  enemyArtKey: string;
+  combatType: "combat" | "elite" | "boss";
+  title: string;
+  subtitle: string;
+  videoUrl: string;
+  posterUrl: string;
+  nextScreen: "reward" | "victory";
+  rewardSummary?: {
+    gold: number;
+    relicName?: string;
+  };
+}
+
 export interface ShopState {
   cards: Array<{
     card: CardInstance;
@@ -156,6 +173,7 @@ export interface GameState {
   currentNodeId: string | null;
   visitedNodeIds: string[];
   combat: CombatState | null;
+  cinematic: CinematicState | null;
   reward: RewardState | null;
   event: EventDef | null;
   shop: ShopState | null;

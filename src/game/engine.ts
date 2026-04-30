@@ -22,6 +22,7 @@ export function createGameState(): GameState {
     currentNodeId: null,
     visitedNodeIds: [],
     combat: null,
+    cinematic: null,
     reward: null,
     event: null,
     shop: null,
@@ -147,6 +148,7 @@ export function startRun(state: GameState) {
   state.currentNodeId = null;
   state.visitedNodeIds = [];
   state.combat = null;
+  state.cinematic = null;
   state.reward = null;
   state.event = null;
   state.shop = null;
@@ -653,7 +655,9 @@ function winCombat(state: GameState) {
   const combat = mustCombat(state);
   const enemy = combat.enemy;
   if (combat.type === "boss") {
-    state.screen = "victory";
+    state.cinematic = createCinematicState(enemy, combat.type, "victory");
+    state.combat = null;
+    state.screen = "cinematic";
     addLog(state, "荒庙雾散，山君伏诛。");
     state.lastFx = "reward";
     return;
@@ -669,10 +673,46 @@ function winCombat(state: GameState) {
     relic,
     cards: randomCardChoices(state, 3),
   };
+  state.cinematic = createCinematicState(enemy, combat.type, "reward", {
+    gold,
+    relicName: relic?.name,
+  });
   state.combat = null;
-  state.screen = "reward";
+  state.screen = "cinematic";
   addLog(state, `获得 ${gold} 金。`);
   state.lastFx = "reward";
+}
+
+function createCinematicState(
+  enemy: EnemyState,
+  combatType: "combat" | "elite" | "boss",
+  nextScreen: "reward" | "victory",
+  rewardSummary?: { gold: number; relicName?: string },
+) {
+  const slug = combatType === "boss" ? `boss-${enemy.id}` : enemy.id;
+  return {
+    enemyId: enemy.id,
+    enemyName: enemy.name,
+    enemyArtKey: enemy.artKey,
+    combatType,
+    title: combatType === "boss" ? "荒庙正殿已破" : `${enemy.name}退散`,
+    subtitle: combatType === "boss" ? "山君伏诛，雾从殿门往外倒流。" : "符火将尽，夜路重新露出一截。",
+    videoUrl: `/assets/generated/cinematics/victory-${slug}.webm`,
+    posterUrl: `/assets/generated/cinematics/victory-${slug}-poster.png`,
+    nextScreen,
+    rewardSummary,
+  };
+}
+
+export function finishCinematic(state: GameState) {
+  const cinematic = state.cinematic;
+  if (!cinematic) {
+    if (state.reward) state.screen = "reward";
+    return;
+  }
+  state.cinematic = null;
+  state.screen = cinematic.nextScreen;
+  state.lastFx = cinematic.nextScreen === "victory" ? "reward" : "none";
 }
 
 function randomCardChoices(state: GameState, count: number) {
@@ -721,6 +761,7 @@ export function takeRewardCard(state: GameState, uid: string) {
 }
 
 export function goMap(state: GameState) {
+  state.cinematic = null;
   state.reward = null;
   state.event = null;
   state.shop = null;

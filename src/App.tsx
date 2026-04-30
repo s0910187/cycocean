@@ -27,6 +27,7 @@ import {
   cloneState,
   createGameState,
   endTurn,
+  finishCinematic,
   goMap,
   heal,
   hpPercent,
@@ -57,6 +58,14 @@ const sealBadgeUrl = new URL("../assets/vendor/shushan/relic-orb-blue.png", impo
 const pileDrawUrl = new URL("../assets/vendor/shushan/badge-scroll.png", import.meta.url).href;
 const pileDiscardUrl = new URL("../assets/vendor/shushan/icon-talisman-paper.png", import.meta.url).href;
 const relicIconUrl = new URL("../assets/vendor/shushan/relic-umbrella.png", import.meta.url).href;
+const playerNightPatrolUrl = new URL("../assets/generated/characters/player-night-patrol.png", import.meta.url).href;
+const enemyArtUrls: Record<string, string> = {
+  lantern: new URL("../assets/enemies/lantern.svg", import.meta.url).href,
+  waterghost: new URL("../assets/generated/enemies/waterghost.png", import.meta.url).href,
+  templecorpse: new URL("../assets/enemies/templecorpse.svg", import.meta.url).href,
+  foxshade: new URL("../assets/enemies/foxshade.svg", import.meta.url).href,
+  tigerlord: new URL("../assets/generated/enemies/tigerlord.png", import.meta.url).href,
+};
 
 export function App() {
   const [game, setGame] = useState<GameState>(() => createGameState());
@@ -104,6 +113,9 @@ export function App() {
             onPlayCard={(uid) => transact((draft) => playCard(draft, uid), false)}
             onEndTurn={() => transact(endTurn)}
           />
+        )}
+        {player && game.screen === "cinematic" && game.cinematic && (
+          <CinematicScreen game={game} onContinue={() => transact(finishCinematic, false)} />
         )}
         {player && game.screen === "reward" && game.reward && (
           <RewardScreen
@@ -610,6 +622,87 @@ function typeLabel(type: string) {
   if (type === "skill") return "技能";
   if (type === "power") return "法门";
   return "状态";
+}
+
+function CinematicScreen({ game, onContinue }: { game: GameState; onContinue: () => void }) {
+  const cinematic = game.cinematic!;
+  const reward = game.reward;
+  const [videoFailed, setVideoFailed] = useState(false);
+  const [videoStarted, setVideoStarted] = useState(false);
+  const enemyArt = enemyArtUrls[cinematic.enemyArtKey] || enemyArtUrls.lantern;
+  const isBoss = cinematic.combatType === "boss";
+  const shouldTryVideo = !videoFailed;
+
+  useEffect(() => {
+    setVideoFailed(false);
+    setVideoStarted(false);
+  }, [cinematic.enemyId, cinematic.combatType]);
+
+  return (
+    <section
+      className={`cinematic-view ${isBoss ? "cinematic-boss" : ""}`}
+      data-video-slot={cinematic.videoUrl}
+      data-poster-slot={cinematic.posterUrl}
+    >
+      <div className="cinematic-scene" aria-label={`${cinematic.enemyName}结算过场参考画面`}>
+        <div className="cinematic-moon" />
+        <img className="cinematic-player" src={playerNightPatrolUrl} alt="" draggable={false} />
+        <img className={`cinematic-enemy enemy-${cinematic.enemyArtKey}`} src={enemyArt} alt="" draggable={false} />
+        <div className="cinematic-slash" />
+        <div className="cinematic-caption">
+          <p className="eyebrow">{isBoss ? "Boss Clear" : "Encounter Clear"}</p>
+          <h2>{cinematic.title}</h2>
+          <span>{cinematic.subtitle}</span>
+        </div>
+        {shouldTryVideo && (
+          <video
+            className={`cinematic-video ${videoStarted ? "is-playing" : ""}`}
+            src={cinematic.videoUrl}
+            poster={cinematic.posterUrl}
+            autoPlay
+            playsInline
+            onPlay={() => setVideoStarted(true)}
+            onEnded={onContinue}
+            onError={() => setVideoFailed(true)}
+          />
+        )}
+        {(videoFailed || !videoStarted) && (
+          <div className="cinematic-static-card">
+            <strong>{cinematic.enemyName}</strong>
+            <span>{isBoss ? "殿门外的雾终于开始退去。" : "残火停在半空，铜钱在灰里发亮。"}</span>
+          </div>
+        )}
+      </div>
+      <aside className="settlement-panel">
+        <p className="eyebrow">战斗结算</p>
+        <h3>{isBoss ? "第一大关完成" : "战利品待领取"}</h3>
+        <div className="settlement-line">
+          <Coins />
+          <span>{cinematic.rewardSummary ? `获得 ${cinematic.rewardSummary.gold} 金` : "山君伏诛，雾散天明"}</span>
+        </div>
+        {cinematic.rewardSummary?.relicName && (
+          <div className="settlement-line">
+            <Sparkles />
+            <span>遗物：{cinematic.rewardSummary.relicName}</span>
+          </div>
+        )}
+        {reward && (
+          <div className="settlement-card-peek">
+            {reward.cards.map((card) => (
+              <span key={card.uid}>{cardName(card)}</span>
+            ))}
+          </div>
+        )}
+        <div className="settlement-flavor">
+          <strong>夜巡记</strong>
+          <span>{isBoss ? "正殿梁上落下第一缕晨光，旧香灰没有再动。" : "妖气退开，地上只剩几枚温热的铜钱。"}</span>
+        </div>
+        <button className="primary-command" type="button" onClick={onContinue}>
+          <SkipForward /> {isBoss ? "进入通关页" : "领取战利品"}
+        </button>
+      </aside>
+    </section>
+  );
 }
 
 function RewardScreen({ game, onTake, onSkip }: { game: GameState; onTake: (uid: string) => void; onSkip: () => void }) {
