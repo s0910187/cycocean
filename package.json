@@ -2,11 +2,64 @@
   "name": "night-patrol-spire",
   "version": "0.2.0",
   "private": true,
+  "description": "志怪题材卡牌构筑 roguelike demo",
+  "main": "electron/main.cjs",
+  "author": "Guohao and Codex",
   "type": "module",
   "scripts": {
     "dev": "vite --host 127.0.0.1",
     "build": "tsc -b && vite build",
-    "preview": "vite preview --host 127.0.0.1"
+    "preview": "vite preview --host 127.0.0.1",
+    "desktop": "npm run build && electron .",
+    "desktop:pack": "npm run build && electron-builder --dir",
+    "desktop:dist": "npm run build && electron-builder"
+  },
+  "build": {
+    "appId": "com.yexunlu.huangmiao",
+    "productName": "夜巡录：荒庙篇",
+    "asar": true,
+    "files": [
+      "dist/**/*",
+      "electron/**/*",
+      "package.json"
+    ],
+    "directories": {
+      "buildResources": "desktop-assets",
+      "output": "release"
+    },
+    "mac": {
+      "category": "public.app-category.games",
+      "identity": "-",
+      "target": [
+        "dmg",
+        "zip"
+      ]
+    },
+    "win": {
+      "icon": "desktop-assets/icon.ico",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "linux": {
+      "icon": "desktop-assets/icon.png",
+      "category": "Game",
+      "target": [
+        "AppImage",
+        "zip"
+      ]
+    }
   },
   "dependencies": {
     "lucide-react": "^0.468.0",
@@ -18,6 +71,8 @@
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^6.0.1",
+    "electron": "^41.3.0",
+    "electron-builder": "^26.8.1",
     "typescript": "^5.6.3",
     "vite": "^8.0.10"
   }
