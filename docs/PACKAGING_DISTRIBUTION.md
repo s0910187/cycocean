@@ -115,8 +115,8 @@ npm run desktop:dist
 macOS 上通常会生成：
 
 ```text
-release/夜巡录：荒庙篇-0.2.0-arm64.dmg
-release/夜巡录：荒庙篇-0.2.0-arm64-mac.zip
+release/Night-Patrol-0.2.0-mac-arm64.dmg
+release/Night-Patrol-0.2.0-mac-arm64.zip
 ```
 
 Windows 包建议交给 GitHub Actions 在 Windows runner 上生成，不建议在 macOS 本地强行交叉打包。
@@ -165,6 +165,17 @@ git push -u origin main
 - `windows-latest`
 
 产物会作为 workflow artifact 上传。如果是 tag 触发，还会自动附加到 GitHub Release。
+
+Release 页面只上传玩家需要下载的安装包和压缩包：
+
+```text
+Night-Patrol-0.2.0-mac-arm64.dmg
+Night-Patrol-0.2.0-mac-arm64.zip
+Night-Patrol-0.2.0-win-x64.exe
+Night-Patrol-0.2.0-win-x64.zip
+```
+
+Electron Builder 仍会在本地生成 blockmap/yml 等自动更新元数据，但 demo 发布阶段不把它们展示给玩家。
 
 ### 5.3 发布一个 demo tag
 

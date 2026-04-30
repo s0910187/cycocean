@@ -21,6 +21,7 @@
   "build": {
     "appId": "com.yexunlu.huangmiao",
     "productName": "夜巡录：荒庙篇",
+    "artifactName": "Night-Patrol-${version}-${os}-${arch}.${ext}",
     "asar": true,
     "files": [
       "dist/**/*",
