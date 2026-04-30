@@ -219,25 +219,25 @@ git push origin v0.2.0-demo
 
 ## 7. 图标方案
 
-当前已经有临时图标：
+当前已经有 GPT-image 2.0 生成的客户端图标：
 
 ```text
 public/favicon.png
 desktop-assets/icon.png
 desktop-assets/icon.ico
 assets/marketing/icon.png
+assets/marketing/icon-gpt-image-2.png
 ```
 
-它来自现有金色八卦 UI 素材，优点是和游戏现有 HUD 风格统一，缺点是还不够“游戏主标识”。
+图标方向是深色符纹底、城隍印/法印主体和狂放毛笔字“夜巡”，比临时八卦图标更接近网游客户端入口图标。
 
-正式图标建议后续用 GPT-image 2.0 单独生成。
-
-图标方向：
+后续如果继续迭代，可以围绕这些方向做第二版：
 
 - 半枚破损城隍印。
 - 暗金符纹。
 - 雾青色灵光。
 - 荒庙夜色轮廓。
+- 更强的毛笔字势。
 - 小尺寸可读。
 - 不要文字、水印、复杂背景。
 
@@ -247,17 +247,17 @@ assets/marketing/icon.png
 Square game app icon for a Chinese supernatural deckbuilding roguelike. A broken golden City God seal floating in dark teal mist, subtle talisman lines glowing with jade light, faint abandoned temple silhouette behind it, cinematic xianxia horror mood, high contrast, centered composition, readable at small size, no text, no watermark, no UI frame.
 ```
 
-正式输出建议：
+当前输出结构：
 
 ```text
-assets/marketing/icon-1024.png
+assets/marketing/icon-gpt-image-2.png
+assets/marketing/icon.png
 public/favicon.png
 desktop-assets/icon.png
 desktop-assets/icon.ico
-desktop-assets/icon.icns
 ```
 
-macOS 的 `.icns` 建议在正式图标定稿后再生成，避免现在反复换图标造成无意义文件 churn。
+macOS 的 `.icns` 由 electron-builder 在打包时根据 `desktop-assets/icon.png` 自动生成。
 
 ## 8. 客户端体积与资源策略
 

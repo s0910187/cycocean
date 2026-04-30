@@ -198,7 +198,7 @@ Phaser scene 收到 snapshot 后更新贴图、尺寸、位置和文本。如果
 - 新增 `desktop:pack` 和 `desktop:dist` 脚本，分别用于本地验证和正式出包。
 - GitHub 的角色调整为 Releases 分发安装包，而不是只做网页试玩。
 
-同时加入了 `public/favicon.png`、`desktop-assets/icon.png` 和 `desktop-assets/icon.ico`。当前使用游戏内金色八卦图标作为临时图标，正式发布前建议再生成一枚专用图标。
+同时加入了 `public/favicon.png`、`desktop-assets/icon.png` 和 `desktop-assets/icon.ico`。图标已从临时八卦素材换成 GPT-image 2.0 生成的“夜巡”客户端图标，源图保存在 `assets/marketing/icon-gpt-image-2.png`。
 
 ## 12. AI 与非游戏开发者如何协作完成
 
