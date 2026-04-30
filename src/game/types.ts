@@ -15,6 +15,7 @@ export type Screen =
 export type CardType = "attack" | "skill" | "power" | "status";
 export type Rarity = "basic" | "common" | "uncommon" | "rare" | "special" | "status";
 export type NodeType = "combat" | "elite" | "event" | "rest" | "shop" | "boss";
+export type Difficulty = "story" | "normal" | "hard";
 
 export interface MapNode {
   id: string;
@@ -167,6 +168,7 @@ export interface PendingCardAction {
 
 export interface GameState {
   screen: Screen;
+  difficulty: Difficulty;
   player: PlayerState | null;
   floor: number;
   mapNodes: MapNode[];

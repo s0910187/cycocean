@@ -42,7 +42,7 @@ import {
   upgradeCard,
 } from "./game/engine";
 import { RitualAudio } from "./game/audio";
-import type { CardInstance, GameState, NodeType } from "./game/types";
+import type { CardInstance, Difficulty, GameState, NodeType } from "./game/types";
 import { CombatStage } from "./phaser/CombatStage";
 
 const routeNames = ["县口", "荒村", "井边", "破庙", "林道", "阴市", "山门", "正殿"];
@@ -60,6 +60,7 @@ const relicIconUrl = new URL("../assets/vendor/shushan/relic-umbrella.png", impo
 const goldIconUrl = new URL("../assets/vendor/shushan/icon-bagua-gold.png", import.meta.url).href;
 const mapIconUrl = new URL("../assets/vendor/aigei/pile-draw.png", import.meta.url).href;
 const playerNightPatrolUrl = new URL("../assets/generated/characters/player-night-patrol.png", import.meta.url).href;
+const sceneLoopVideoUrl = new URL("../assets/generated/backgrounds/night-temple-loop.mp4", import.meta.url).href;
 const enemyArtUrls: Record<string, string> = {
   lantern: new URL("../assets/generated/enemies/lantern.png", import.meta.url).href,
   waterghost: new URL("../assets/generated/enemies/waterghost.png", import.meta.url).href,
@@ -90,7 +91,10 @@ const cinematicVideoUrls: Record<string, string> = {
 export function App() {
   const [game, setGame] = useState<GameState>(() => createGameState());
   const [muted, setMuted] = useState(false);
+  const [selectedDifficulty, setSelectedDifficulty] = useState<Difficulty>("normal");
+  const [loadingDifficulty, setLoadingDifficulty] = useState<Difficulty | null>(null);
   const audioRef = useRef<RitualAudio | null>(null);
+  const loadingTimerRef = useRef<number | null>(null);
 
   const audio = () => {
     if (!audioRef.current) audioRef.current = new RitualAudio();
@@ -116,7 +120,20 @@ export function App() {
 
   const returnHome = () => {
     audio().sfx("click");
+    if (loadingTimerRef.current) window.clearTimeout(loadingTimerRef.current);
+    setLoadingDifficulty(null);
     setGame(createGameState());
+  };
+
+  const beginRun = (difficulty: Difficulty) => {
+    audio().sfx("click");
+    setSelectedDifficulty(difficulty);
+    setLoadingDifficulty(difficulty);
+    if (loadingTimerRef.current) window.clearTimeout(loadingTimerRef.current);
+    loadingTimerRef.current = window.setTimeout(() => {
+      setLoadingDifficulty(null);
+      transact((draft) => startRun(draft, difficulty), false);
+    }, 1450);
   };
 
   const player = game.player;
@@ -125,6 +142,15 @@ export function App() {
     audio().setMusicMode(game.screen === "title" ? "title" : "game");
   }, [game.screen]);
 
+  useEffect(
+    () => () => {
+      if (loadingTimerRef.current) window.clearTimeout(loadingTimerRef.current);
+    },
+    [],
+  );
+
+  const visibleScreen = loadingDifficulty ? "loading" : game.screen;
+
   return (
     <div className="app-frame">
       <TopHud
@@ -132,10 +158,17 @@ export function App() {
         muted={muted}
         onMute={toggleMute}
         onHome={returnHome}
-        onRestart={() => transact(startRun)}
+        onRestart={() => transact((draft) => startRun(draft, game.difficulty || selectedDifficulty))}
       />
-      <main className={`screen screen-${game.screen}`}>
-        {game.screen === "title" && <TitleScreen onStart={() => transact(startRun)} />}
+      <main className={`screen screen-${visibleScreen}`}>
+        {loadingDifficulty && <LoadingScreen difficulty={loadingDifficulty} />}
+        {!loadingDifficulty && game.screen === "title" && (
+          <TitleScreen
+            selectedDifficulty={selectedDifficulty}
+            onDifficulty={setSelectedDifficulty}
+            onStart={beginRun}
+          />
+        )}
         {player && game.screen === "map" && <MapScreen game={game} onChoose={(nodeId) => transact((draft) => chooseNode(draft, nodeId))} />}
         {player && game.screen === "combat" && game.combat && (
           <CombatScreen
@@ -264,21 +297,72 @@ function HudChip({ icon, label, tone }: { icon: ReactNode; label: string; tone?:
   );
 }
 
-function TitleScreen({ onStart }: { onStart: () => void }) {
+const difficultyOptions: Array<{
+  id: Difficulty;
+  name: string;
+  tag: string;
+  desc: string;
+}> = [
+  { id: "story", name: "演示", tag: "拍视频", desc: "血量更高，敌人更松，开局多一点循环支撑。" },
+  { id: "normal", name: "标准", tag: "推荐", desc: "完整路线体验，数值更稳，不会第一关就太刮人。" },
+  { id: "hard", name: "劫难", tag: "挑战", desc: "敌人更硬更痛，适合后面调平衡时压测。" },
+];
+
+function TitleScreen({
+  selectedDifficulty,
+  onDifficulty,
+  onStart,
+}: {
+  selectedDifficulty: Difficulty;
+  onDifficulty: (difficulty: Difficulty) => void;
+  onStart: (difficulty: Difficulty) => void;
+}) {
   return (
     <section className="title-view">
+      <video className="scene-loop-video title-loop-video" src={sceneLoopVideoUrl} autoPlay loop muted playsInline />
       <div className="title-copy">
         <p className="eyebrow">React + Phaser prototype</p>
         <h1>荒庙夜巡</h1>
         <p>
           永宁县外，夜雾倒流，荒庙重燃残香。你带着半枚城隍印上路，用符箓、剑诀、香火和奇物，在每一次岔路里拼出活下去的法门。
         </p>
+        <div className="difficulty-picker" role="radiogroup" aria-label="难度选择">
+          {difficultyOptions.map((option) => (
+            <button
+              key={option.id}
+              type="button"
+              className={`difficulty-card ${selectedDifficulty === option.id ? "selected" : ""}`}
+              onClick={() => onDifficulty(option.id)}
+              role="radio"
+              aria-checked={selectedDifficulty === option.id}
+            >
+              <span>{option.tag}</span>
+              <strong>{option.name}</strong>
+              <em>{option.desc}</em>
+            </button>
+          ))}
+        </div>
         <div className="title-actions">
-          <button className="primary-command" type="button" onClick={onStart}>
+          <button className="primary-command" type="button" onClick={() => onStart(selectedDifficulty)}>
             <Swords /> 开始夜巡
           </button>
         </div>
       </div>
+    </section>
+  );
+}
+
+function LoadingScreen({ difficulty }: { difficulty: Difficulty }) {
+  const option = difficultyOptions.find((item) => item.id === difficulty) || difficultyOptions[1];
+  return (
+    <section className="loading-view">
+      <video className="scene-loop-video loading-loop-video" src={sceneLoopVideoUrl} autoPlay loop muted playsInline />
+      <div className="loading-copy">
+        <p className="eyebrow">入夜</p>
+        <h2>雾门将开</h2>
+        <span>{option.name}难度</span>
+      </div>
+      <div className="loading-thread" />
     </section>
   );
 }
@@ -464,6 +548,7 @@ function CombatScreen({ game, onPlayCard, onEndTurn }: { game: GameState; onPlay
   return (
     <section className="combat-view">
       <CombatStage combat={combat} player={player} />
+      <video className="combat-scene-loop" src={sceneLoopVideoUrl} autoPlay loop muted playsInline />
       <div className={`combat-overlay ${drag ? "drag-active" : ""} ${expectedTarget ? `expects-${expectedTarget}` : ""} ${targetHot ? "target-hot" : ""}`}>
         <div className={`play-drop-zone ${drag ? "visible" : ""} ${targetHot ? "hot" : ""}`}>{targetHot ? "松手施放" : dropHint}</div>
         <div className={`target-ghost target-player ${expectedTarget === "player" ? "visible" : ""} ${targetHot && hoverTarget === "player" ? "hot" : ""}`}>

@@ -2,6 +2,7 @@ import { CARD_DEFS, CARD_POOL, ENEMIES, EVENTS, NODE_DEFS, RELICS } from "./cont
 import type {
   CardInstance,
   CombatState,
+  Difficulty,
   EnemyMove,
   EnemyState,
   GameState,
@@ -12,9 +13,55 @@ import type {
   ShopState,
 } from "./types";
 
+const DIFFICULTY_SPECS: Record<
+  Difficulty,
+  {
+    playerHp: number;
+    gold: number;
+    maxEnergy: number;
+    enemyHp: number;
+    enemyDamage: number;
+    rewardGold: number;
+    startingRelics: string[];
+    logName: string;
+  }
+> = {
+  story: {
+    playerHp: 96,
+    gold: 90,
+    maxEnergy: 4,
+    enemyHp: 0.82,
+    enemyDamage: 0.72,
+    rewardGold: 1.25,
+    startingRelics: ["oldUmbrella", "blankPage"],
+    logName: "演示",
+  },
+  normal: {
+    playerHp: 84,
+    gold: 65,
+    maxEnergy: 3,
+    enemyHp: 0.92,
+    enemyDamage: 0.9,
+    rewardGold: 1.1,
+    startingRelics: [],
+    logName: "标准",
+  },
+  hard: {
+    playerHp: 74,
+    gold: 45,
+    maxEnergy: 3,
+    enemyHp: 1.08,
+    enemyDamage: 1.08,
+    rewardGold: 1,
+    startingRelics: [],
+    logName: "劫难",
+  },
+};
+
 export function createGameState(): GameState {
   return {
     screen: "title",
+    difficulty: "normal",
     player: null,
     floor: 0,
     mapNodes: [],
@@ -126,35 +173,43 @@ function addLog(state: GameState, message: string) {
   state.log = state.log.slice(0, 9);
 }
 
-export function startRun(state: GameState) {
+export function startRun(state: GameState, difficulty: Difficulty = "normal") {
+  const spec = DIFFICULTY_SPECS[difficulty];
   const deck = [
     "strike",
     "strike",
     "strike",
-    "strike",
-    "defend",
     "defend",
     "defend",
     "defend",
     "zhusha",
     "windScroll",
+    "cloudstep",
+    "qingxin",
   ].map((id) => createCard(state, id));
+
+  if (difficulty === "story") {
+    deck.find((card) => card.id === "zhusha")!.upgraded = true;
+    deck.find((card) => card.id === "windScroll")!.upgraded = true;
+  }
 
   state.player = {
     name: "游方夜巡人",
-    hp: 78,
-    maxHp: 78,
+    hp: spec.playerHp,
+    maxHp: spec.playerHp,
     block: 0,
-    energy: 3,
-    maxEnergy: 3,
+    energy: spec.maxEnergy,
+    maxEnergy: spec.maxEnergy,
     incense: 0,
-    gold: 55,
+    gold: spec.gold,
     weak: 0,
     vulnerable: 0,
     powers: {},
     deck,
     relics: [],
   };
+  state.difficulty = difficulty;
+  spec.startingRelics.forEach((id) => addRelic(state, id));
   state.floor = 0;
   state.mapNodes = generateRouteMap(state);
   state.availableNodeIds = state.mapNodes.filter((node) => node.row === 0).map((node) => node.id);
@@ -168,6 +223,7 @@ export function startRun(state: GameState) {
   state.pendingRemove = null;
   state.pendingUpgrade = null;
   state.log = [];
+  addLog(state, `难度：${spec.logName}。`);
   addLog(state, "子时三刻，城外纸灯尽灭。");
   addLog(state, "雾从荒庙檐下倒流，路只剩几截。");
   addLog(state, "夜路起雾，城隍残印微微发烫。");
@@ -261,13 +317,17 @@ export function chooseNode(state: GameState, nodeId: string) {
 function enemyFor(state: GameState, type: "combat" | "elite" | "boss") {
   if (type === "boss") return "tigerlord";
   if (type === "elite") return pick(state, ["warlock", "foxshade"]);
+  if (state.floor <= 1) return pick(state, ["lantern", "waterghost"]);
+  if (state.floor <= 3) return pick(state, ["lantern", "waterghost", "templecorpse"]);
   return pick(state, ["lantern", "waterghost", "templecorpse", "macaque"]);
 }
 
 function startCombat(state: GameState, type: "combat" | "elite" | "boss") {
   const template = ENEMIES[enemyFor(state, type)];
+  const spec = DIFFICULTY_SPECS[state.difficulty];
   const floorScale = Math.max(0, state.floor - 1);
-  const hp = template.hp + (type === "combat" ? floorScale * 4 : floorScale * 6);
+  const baseHp = template.hp + (type === "combat" ? floorScale * 4 : floorScale * 6);
+  const hp = Math.max(1, Math.round(baseHp * spec.enemyHp));
   const enemy: EnemyState = {
     ...template,
     hp,
@@ -430,9 +490,10 @@ function losePlayerHp(state: GameState, amount: number, source = "失去生命")
 function enemyAttack(state: GameState, base: number, hits = 1) {
   const player = mustPlayer(state);
   const combat = mustCombat(state);
+  const spec = DIFFICULTY_SPECS[state.difficulty];
   let total = 0;
   for (let i = 0; i < hits; i += 1) {
-    let amount = base + combat.enemy.strength;
+    let amount = Math.max(1, Math.round(base * spec.enemyDamage)) + combat.enemy.strength;
     if (combat.enemy.weak > 0) amount = Math.floor(amount * 0.75);
     const blocked = Math.min(player.block, amount);
     player.block -= blocked;
@@ -703,7 +764,8 @@ function winCombat(state: GameState) {
     return;
   }
 
-  const gold = int(state, 18, 32) + (combat.type === "elite" ? 18 : 0);
+  const spec = DIFFICULTY_SPECS[state.difficulty];
+  const gold = Math.round((int(state, 18, 32) + (combat.type === "elite" ? 18 : 0)) * spec.rewardGold);
   mustPlayer(state).gold += gold;
   let relic: RelicDef | null = null;
   if (combat.type === "elite" || random(state) > 0.8) relic = gainRandomRelic(state);
@@ -764,15 +826,23 @@ export function finishCinematic(state: GameState) {
 
 function randomCardChoices(state: GameState, count: number) {
   const cards: CardInstance[] = [];
+  const cycleIds = ["cloudstep", "qingxin", "windScroll", "fog", "ashReturn", "scripture", "refine", "nightEye"];
+  const payoffIds = ["thunder", "burn", "breakEvil", "mirror", "command", "paper", "incense", "citygod"];
   const pool = shuffle(state, CARD_POOL);
   for (const id of pool) {
     if (cards.length >= count) break;
     cards.push(createCard(state, id));
   }
-  const cycleIds = new Set(["cloudstep", "qingxin", "windScroll", "scripture", "ashReturn", "refine"]);
-  if (cards.length >= 3 && !cards.some((card) => cycleIds.has(card.id))) {
-    const replacement = pick(state, [...cycleIds]);
+  if (cards.length >= 3 && !cards.some((card) => cycleIds.includes(card.id))) {
+    const replacement = pick(state, cycleIds);
     cards[0] = createCard(state, replacement);
+  }
+  if (cards.length >= 3 && !cards.some((card) => payoffIds.includes(card.id))) {
+    const replacement = pick(state, payoffIds);
+    cards[1] = createCard(state, replacement);
+  }
+  if (cards.length === 1 && state.floor <= 3 && random(state) < 0.55) {
+    cards[0] = createCard(state, pick(state, cycleIds));
   }
   return cards;
 }
