@@ -693,6 +693,34 @@ button:focus-visible {
   height: min(58vh, 520px);
 }
 
+.cinematic-enemy.enemy-lantern {
+  right: 13%;
+  width: min(24vw, 330px);
+  height: min(52vh, 480px);
+}
+
+.cinematic-enemy.enemy-templecorpse {
+  width: min(29vw, 410px);
+  height: min(58vh, 540px);
+}
+
+.cinematic-enemy.enemy-macaque {
+  right: 7%;
+  bottom: 13%;
+  width: min(36vw, 500px);
+  height: min(43vh, 400px);
+}
+
+.cinematic-enemy.enemy-warlock {
+  width: min(32vw, 470px);
+  height: min(60vh, 560px);
+}
+
+.cinematic-enemy.enemy-foxshade {
+  width: min(30vw, 430px);
+  height: min(60vh, 560px);
+}
+
 .cinematic-slash {
   position: absolute;
   z-index: 3;

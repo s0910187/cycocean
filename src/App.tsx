@@ -60,10 +60,12 @@ const pileDiscardUrl = new URL("../assets/vendor/shushan/icon-talisman-paper.png
 const relicIconUrl = new URL("../assets/vendor/shushan/relic-umbrella.png", import.meta.url).href;
 const playerNightPatrolUrl = new URL("../assets/generated/characters/player-night-patrol.png", import.meta.url).href;
 const enemyArtUrls: Record<string, string> = {
-  lantern: new URL("../assets/enemies/lantern.svg", import.meta.url).href,
+  lantern: new URL("../assets/generated/enemies/lantern.png", import.meta.url).href,
   waterghost: new URL("../assets/generated/enemies/waterghost.png", import.meta.url).href,
-  templecorpse: new URL("../assets/enemies/templecorpse.svg", import.meta.url).href,
-  foxshade: new URL("../assets/enemies/foxshade.svg", import.meta.url).href,
+  templecorpse: new URL("../assets/generated/enemies/templecorpse.png", import.meta.url).href,
+  macaque: new URL("../assets/generated/enemies/macaque.png", import.meta.url).href,
+  warlock: new URL("../assets/generated/enemies/warlock.png", import.meta.url).href,
+  foxshade: new URL("../assets/generated/enemies/foxshade.png", import.meta.url).href,
   tigerlord: new URL("../assets/generated/enemies/tigerlord.png", import.meta.url).href,
 };
 

@@ -4,8 +4,33 @@ import type { CombatState, PlayerState } from "../game/types";
 
 const nightTempleBattleUrl = new URL("../../assets/generated/backgrounds/night-temple-battle.png", import.meta.url).href;
 const playerNightPatrolUrl = new URL("../../assets/generated/characters/player-night-patrol.png", import.meta.url).href;
+const lanternUrl = new URL("../../assets/generated/enemies/lantern.png", import.meta.url).href;
 const waterghostUrl = new URL("../../assets/generated/enemies/waterghost.png", import.meta.url).href;
+const templecorpseUrl = new URL("../../assets/generated/enemies/templecorpse.png", import.meta.url).href;
+const macaqueUrl = new URL("../../assets/generated/enemies/macaque.png", import.meta.url).href;
+const warlockUrl = new URL("../../assets/generated/enemies/warlock.png", import.meta.url).href;
+const foxshadeUrl = new URL("../../assets/generated/enemies/foxshade.png", import.meta.url).href;
 const tigerlordUrl = new URL("../../assets/generated/enemies/tigerlord.png", import.meta.url).href;
+
+const ENEMY_ART_URLS: Record<string, string> = {
+  lantern: lanternUrl,
+  waterghost: waterghostUrl,
+  templecorpse: templecorpseUrl,
+  macaque: macaqueUrl,
+  warlock: warlockUrl,
+  foxshade: foxshadeUrl,
+  tigerlord: tigerlordUrl,
+};
+
+const ENEMY_STAGE_SIZE: Record<string, { width: number; height: number; y: number }> = {
+  lantern: { width: 0.19, height: 0.4, y: 0.58 },
+  waterghost: { width: 0.22, height: 0.42, y: 0.59 },
+  templecorpse: { width: 0.24, height: 0.45, y: 0.59 },
+  macaque: { width: 0.3, height: 0.34, y: 0.61 },
+  warlock: { width: 0.27, height: 0.47, y: 0.58 },
+  foxshade: { width: 0.25, height: 0.46, y: 0.58 },
+  tigerlord: { width: 0.39, height: 0.4, y: 0.59 },
+};
 
 interface CombatStageProps {
   combat: CombatState;
@@ -49,11 +74,9 @@ class NightBattleScene extends Phaser.Scene {
   preload() {
     this.load.image("huangmiao-bg", nightTempleBattleUrl);
     this.load.image("player-night-patrol", playerNightPatrolUrl);
-    this.load.image("enemy-lantern", "/assets/enemies/lantern.svg");
-    this.load.image("enemy-waterghost", waterghostUrl);
-    this.load.image("enemy-templecorpse", "/assets/enemies/templecorpse.svg");
-    this.load.image("enemy-foxshade", "/assets/enemies/foxshade.svg");
-    this.load.image("enemy-tigerlord", tigerlordUrl);
+    Object.entries(ENEMY_ART_URLS).forEach(([key, url]) => {
+      this.load.image(`enemy-${key}`, url);
+    });
   }
 
   create() {
@@ -140,13 +163,11 @@ class NightBattleScene extends Phaser.Scene {
       this.enemy.setTexture(`enemy-${this.snapshot.enemyKey}`);
       this.lastEnemyKey = this.snapshot.enemyKey;
     }
-    const boss = this.snapshot.enemyKey === "tigerlord";
-    this.enemyBaseY = height * 0.59;
+    const enemySize = ENEMY_STAGE_SIZE[this.snapshot.enemyKey] || ENEMY_STAGE_SIZE.lantern;
+    this.enemyBaseY = height * enemySize.y;
     this.playerBaseY = height * 0.66;
     this.enemy.setPosition(width * 0.74, this.enemyBaseY);
-    const enemyWidth = boss ? 0.39 : this.snapshot.enemyKey === "waterghost" ? 0.22 : 0.24;
-    const enemyHeight = boss ? 0.4 : this.snapshot.enemyKey === "waterghost" ? 0.42 : 0.34;
-    this.enemy.setDisplaySize(width * enemyWidth, height * enemyHeight);
+    this.enemy.setDisplaySize(width * enemySize.width, height * enemySize.height);
     this.player?.setPosition(width * 0.28, this.playerBaseY);
     this.playerSprite?.setDisplaySize(width * 0.2, height * 0.48);
     this.playerShadow?.setSize(width * 0.18, height * 0.055);

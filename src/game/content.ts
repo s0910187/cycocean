@@ -262,7 +262,7 @@ export const ENEMIES: Record<string, EnemyTemplate> = {
   macaque: {
     id: "macaque",
     name: "山魈",
-    artKey: "waterghost",
+    artKey: "macaque",
     hp: 56,
     moves: [
       { type: "attack", amount: 5, hits: 3, label: "乱爪" },
@@ -273,7 +273,7 @@ export const ENEMIES: Record<string, EnemyTemplate> = {
   warlock: {
     id: "warlock",
     name: "黑坛术士",
-    artKey: "templecorpse",
+    artKey: "warlock",
     hp: 72,
     elite: true,
     moves: [
