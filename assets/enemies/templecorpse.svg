@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="420" height="420" viewBox="0 0 420 420" role="img" aria-label="庙祝尸">
+  <defs>
+    <linearGradient id="robe" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#6b3b2f"/>
+      <stop offset=".5" stop-color="#2f2721"/>
+      <stop offset="1" stop-color="#151311"/>
+    </linearGradient>
+    <filter id="shadow"><feDropShadow dx="0" dy="18" stdDeviation="16" flood-color="#000" flood-opacity=".48"/></filter>
+  </defs>
+  <g filter="url(#shadow)">
+    <path d="M168 70 H252 L268 128 H152 Z" fill="#c4a15e" stroke="#271a13" stroke-width="7"/>
+    <path d="M156 128 C128 183 112 266 95 366 H325 C308 266 292 183 264 128 Z" fill="url(#robe)" stroke="#c49c55" stroke-opacity=".38" stroke-width="7"/>
+    <path d="M168 127 C178 170 242 170 252 127" fill="#d2c1a4" stroke="#2a2018" stroke-width="7"/>
+    <path d="M184 190 H236 M174 237 H246 M161 286 H259" fill="none" stroke="#b84335" stroke-opacity=".6" stroke-width="8"/>
+    <path d="M178 145 C190 157 230 157 242 145" fill="none" stroke="#17110e" stroke-width="8" stroke-linecap="round"/>
+    <path d="M180 204 C192 196 204 196 214 207 M216 207 C226 196 238 196 250 204" fill="none" stroke="#080707" stroke-width="8" stroke-linecap="round"/>
+    <path d="M80 236 C117 226 146 245 165 282 M340 236 C303 226 274 245 255 282" fill="none" stroke="#584337" stroke-width="14" stroke-linecap="round"/>
+  </g>
+</svg>

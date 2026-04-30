@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-label="夜色荒庙山路">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#10161b"/>
+      <stop offset="0.45" stop-color="#182328"/>
+      <stop offset="1" stop-color="#30251e"/>
+    </linearGradient>
+    <radialGradient id="moon" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#f3e1b7" stop-opacity=".85"/>
+      <stop offset=".45" stop-color="#d5b36e" stop-opacity=".28"/>
+      <stop offset="1" stop-color="#d5b36e" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="blur">
+      <feGaussianBlur stdDeviation="9"/>
+    </filter>
+    <pattern id="paper" width="80" height="80" patternUnits="userSpaceOnUse">
+      <path d="M0 26 C14 20 21 33 40 27 S66 15 80 23" fill="none" stroke="#f2deb0" stroke-opacity=".035" stroke-width="1"/>
+      <path d="M0 62 C21 56 36 73 57 59 S72 53 80 60" fill="none" stroke="#080a0c" stroke-opacity=".08" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1600" height="900" fill="url(#sky)"/>
+  <rect width="1600" height="900" fill="url(#paper)"/>
+  <circle cx="1160" cy="145" r="150" fill="url(#moon)" filter="url(#blur)"/>
+  <path d="M0 380 C180 285 320 330 460 255 C620 170 780 315 930 230 C1135 115 1320 265 1600 180 L1600 900 L0 900 Z" fill="#11191c" opacity=".8"/>
+  <path d="M0 475 C240 380 385 430 540 360 C730 275 960 385 1120 315 C1300 240 1450 315 1600 285 L1600 900 L0 900 Z" fill="#182124" opacity=".9"/>
+  <path d="M0 620 C170 545 350 575 520 520 C710 460 820 590 1030 495 C1195 420 1390 500 1600 430 L1600 900 L0 900 Z" fill="#202622"/>
+  <path d="M830 530 L1010 462 L1190 530 L1190 760 L830 760 Z" fill="#31251e" stroke="#b28a46" stroke-opacity=".28" stroke-width="4"/>
+  <path d="M790 535 L1010 410 L1230 535 Z" fill="#1b1715" stroke="#c29a52" stroke-opacity=".35" stroke-width="5"/>
+  <path d="M960 605 L1060 605 L1060 760 L960 760 Z" fill="#11100f"/>
+  <path d="M975 630 C1000 608 1021 608 1046 630 L1046 760 L975 760 Z" fill="#090908"/>
+  <rect x="885" y="585" width="52" height="82" fill="#171513" stroke="#7c6035" stroke-opacity=".45"/>
+  <rect x="1086" y="585" width="52" height="82" fill="#171513" stroke="#7c6035" stroke-opacity=".45"/>
+  <path d="M620 900 C750 720 875 680 1005 760 C1125 832 1255 775 1380 900 Z" fill="#6f4d2c" opacity=".22"/>
+  <path d="M620 900 C750 720 875 680 1005 760 C1125 832 1255 775 1380 900" fill="none" stroke="#d9b66e" stroke-opacity=".22" stroke-width="9"/>
+  <g opacity=".34">
+    <circle cx="220" cy="690" r="42" fill="#b74a37" opacity=".22"/>
+    <rect x="214" y="660" width="12" height="112" fill="#15110f"/>
+    <path d="M202 690 C215 665 231 665 244 690 C231 715 215 715 202 690 Z" fill="#c8543a"/>
+    <circle cx="1360" cy="610" r="36" fill="#b74a37" opacity=".22"/>
+    <rect x="1355" y="586" width="10" height="95" fill="#15110f"/>
+    <path d="M1342 610 C1354 588 1367 588 1380 610 C1367 632 1354 632 1342 610 Z" fill="#c8543a"/>
+  </g>
+  <path d="M0 760 C230 710 360 790 520 748 C680 705 760 760 900 735 C1090 700 1280 770 1600 710 L1600 900 L0 900 Z" fill="#101313" opacity=".55"/>
+</svg>

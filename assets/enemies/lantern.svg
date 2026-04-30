@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="420" height="420" viewBox="0 0 420 420" role="img" aria-label="灯笼精">
+  <defs>
+    <radialGradient id="g" cx="50%" cy="45%" r="45%">
+      <stop offset="0" stop-color="#e6a14a"/>
+      <stop offset=".55" stop-color="#a53a2f"/>
+      <stop offset="1" stop-color="#301719"/>
+    </radialGradient>
+    <filter id="s"><feDropShadow dx="0" dy="18" stdDeviation="14" flood-color="#000" flood-opacity=".45"/></filter>
+  </defs>
+  <g filter="url(#s)">
+    <path d="M210 58 C170 98 145 138 145 205 C145 289 175 342 210 360 C245 342 275 289 275 205 C275 138 250 98 210 58 Z" fill="url(#g)" stroke="#d5b56b" stroke-width="8"/>
+    <path d="M151 181 H269 M151 231 H269 M165 110 C190 126 230 126 255 110 M165 318 C190 300 230 300 255 318" fill="none" stroke="#f0ce7a" stroke-opacity=".45" stroke-width="6"/>
+    <path d="M190 198 C199 188 221 188 230 198 M182 246 C198 264 222 264 238 246" fill="none" stroke="#110b0b" stroke-width="9" stroke-linecap="round"/>
+    <path d="M210 38 V72 M180 44 H240 M210 355 V392" stroke="#cba15a" stroke-width="8" stroke-linecap="round"/>
+    <path d="M178 386 C198 402 222 402 242 386" fill="none" stroke="#cba15a" stroke-width="6" stroke-linecap="round"/>
+  </g>
+</svg>

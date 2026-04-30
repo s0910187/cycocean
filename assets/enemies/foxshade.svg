@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="420" height="420" viewBox="0 0 420 420" role="img" aria-label="画皮影">
+  <defs>
+    <linearGradient id="skin" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ecd7b2"/>
+      <stop offset=".55" stop-color="#9b5a4c"/>
+      <stop offset="1" stop-color="#1e1719"/>
+    </linearGradient>
+    <filter id="shadow"><feDropShadow dx="0" dy="20" stdDeviation="18" flood-color="#000" flood-opacity=".55"/></filter>
+  </defs>
+  <g filter="url(#shadow)">
+    <path d="M210 46 C146 74 127 149 150 217 C111 244 96 306 119 366 C153 337 181 337 210 381 C239 337 267 337 301 366 C324 306 309 244 270 217 C293 149 274 74 210 46 Z" fill="url(#skin)" stroke="#d7b46e" stroke-opacity=".45" stroke-width="6"/>
+    <path d="M150 125 C118 91 118 51 141 32 C170 57 185 87 184 123 M270 125 C302 91 302 51 279 32 C250 57 235 87 236 123" fill="#2f1a1d" stroke="#d7b46e" stroke-opacity=".25" stroke-width="5"/>
+    <path d="M178 179 C195 168 208 168 220 181 M222 181 C234 168 247 168 264 179" fill="none" stroke="#120b0d" stroke-width="8" stroke-linecap="round"/>
+    <path d="M181 252 C204 268 232 268 255 252" fill="none" stroke="#2a1010" stroke-width="8" stroke-linecap="round"/>
+    <path d="M132 248 C90 265 74 305 85 351 M288 248 C330 265 346 305 335 351" fill="none" stroke="#5c2f36" stroke-width="12" stroke-linecap="round"/>
+    <path d="M167 91 C184 120 236 120 253 91" fill="none" stroke="#f0d6a4" stroke-opacity=".4" stroke-width="4"/>
+  </g>
+</svg>

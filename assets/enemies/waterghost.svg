@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="420" height="420" viewBox="0 0 420 420" role="img" aria-label="披蓑水鬼">
+  <defs>
+    <linearGradient id="body" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#b7c7bd"/>
+      <stop offset=".45" stop-color="#4f6b65"/>
+      <stop offset="1" stop-color="#172522"/>
+    </linearGradient>
+    <filter id="shadow"><feDropShadow dx="0" dy="20" stdDeviation="18" flood-color="#000" flood-opacity=".5"/></filter>
+  </defs>
+  <g filter="url(#shadow)">
+    <path d="M210 52 C154 80 132 141 143 210 C112 246 107 301 135 344 C160 321 182 334 210 371 C238 334 260 321 285 344 C313 301 308 246 277 210 C288 141 266 80 210 52 Z" fill="url(#body)" stroke="#d1c08a" stroke-opacity=".45" stroke-width="6"/>
+    <path d="M160 148 C184 130 236 130 260 148 M171 201 C185 190 199 190 209 204 M211 204 C221 190 235 190 249 201" fill="none" stroke="#08100f" stroke-width="8" stroke-linecap="round"/>
+    <path d="M165 263 C194 281 226 281 255 263" fill="none" stroke="#0e1715" stroke-width="9" stroke-linecap="round"/>
+    <path d="M120 216 C71 220 49 261 57 311 M300 216 C349 220 371 261 363 311" fill="none" stroke="#89a99f" stroke-opacity=".75" stroke-width="15" stroke-linecap="round"/>
+    <path d="M122 353 C172 333 246 333 298 353" fill="none" stroke="#84a099" stroke-width="8" stroke-linecap="round"/>
+  </g>
+</svg>
