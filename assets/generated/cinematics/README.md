@@ -10,8 +10,20 @@ The game already has optional slots for these files:
 - `victory-foxshade.webm`
 - `victory-boss-tigerlord.webm`
 
-Optional poster images use the same name with `-poster.png`, for example:
+Seedance / video reference stills are saved as poster images with the same name plus `-poster.png`:
 
+- `victory-lantern-poster.png`
 - `victory-waterghost-poster.png`
+- `victory-templecorpse-poster.png`
+- `victory-macaque-poster.png`
+- `victory-warlock-poster.png`
+- `victory-foxshade-poster.png`
+- `victory-boss-tigerlord-poster.png`
 
 When a video is missing or fails to load, the game falls back to the in-game settlement scene.
+
+Recommended video durations:
+
+- Normal encounters: 4 seconds.
+- Elite encounters: 5 seconds.
+- Act boss: 8-12 seconds.

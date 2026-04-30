@@ -1,4 +1,4 @@
-import { CARD_DEFS, CARD_POOL, ENEMIES, EVENTS, RELICS } from "./content";
+import { CARD_DEFS, CARD_POOL, ENEMIES, EVENTS, NODE_DEFS, RELICS } from "./content";
 import type {
   CardInstance,
   CombatState,
@@ -68,6 +68,19 @@ export function intentText(intent: EnemyMove | null) {
   if (intent.type === "curse") return `${intent.label}：塞入 ${intent.amount} 张阴寒`;
   if (intent.type === "blockAttack") return `${intent.label}：格挡 ${intent.block} 并攻击 ${intent.amount}`;
   return intent.label;
+}
+
+const ROUTE_ROW_NAMES = ["县口", "荒村", "井边", "破庙", "林道", "阴市", "山门", "正殿"];
+
+function nodeTrailLine(node: MapNode) {
+  const row = ROUTE_ROW_NAMES[node.row] || "夜路";
+  const def = NODE_DEFS[node.type];
+  if (node.type === "combat") return `踏入${row}，雾里传来爪牙刮石的声音。`;
+  if (node.type === "elite") return `${row}阴风骤紧，破庙恶客已经等在门槛后。`;
+  if (node.type === "event") return `${row}路旁纸灯自己亮起，一桩怪事拦住去路。`;
+  if (node.type === "rest") return `${row}残灯未灭，可以借一口香火重新整备。`;
+  if (node.type === "shop") return `${row}灯摊无主，铜钱声从帘后滚出来。`;
+  return `${row}尽头只剩${def.name}。`;
 }
 
 function random(state: GameState) {
@@ -155,6 +168,8 @@ export function startRun(state: GameState) {
   state.pendingRemove = null;
   state.pendingUpgrade = null;
   state.log = [];
+  addLog(state, "子时三刻，城外纸灯尽灭。");
+  addLog(state, "雾从荒庙檐下倒流，路只剩几截。");
   addLog(state, "夜路起雾，城隍残印微微发烫。");
   state.screen = "map";
   state.lastFx = "reward";
@@ -233,9 +248,13 @@ export function chooseNode(state: GameState, nodeId: string) {
   state.availableNodeIds = node.nextIds;
   state.floor = node.row + 1;
   const type = node.type;
+  addLog(state, nodeTrailLine(node));
   if (type === "combat" || type === "elite" || type === "boss") startCombat(state, type);
   if (type === "event") startEvent(state);
-  if (type === "rest") state.screen = "rest";
+  if (type === "rest") {
+    state.screen = "rest";
+    addLog(state, "残灯照着旧伤，今晚还能再撑一程。");
+  }
   if (type === "shop") startShop(state);
 }
 
@@ -784,6 +803,7 @@ function recycleDiscardIntoDraw(state: GameState) {
 function startEvent(state: GameState) {
   state.event = pick(state, EVENTS);
   state.screen = "event";
+  addLog(state, `${state.event.title}浮现在雾里。`);
 }
 
 export function resolveEvent(state: GameState, choiceId: string) {
@@ -861,6 +881,7 @@ function startShop(state: GameState) {
     removeCost: 75,
   };
   state.screen = "shop";
+  addLog(state, "阴市灯摊摊开货匣，符纸和旧器都沾着冷香。");
 }
 
 function randomShopRelic(state: GameState) {

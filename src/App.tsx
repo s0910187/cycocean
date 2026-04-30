@@ -2,9 +2,8 @@ import {
   AudioWaveform,
   BadgeCent,
   BookOpen,
-  Coins,
-  Map,
-  Settings,
+  Home,
+  RotateCcw,
   Shield,
   SkipForward,
   Sparkles,
@@ -58,6 +57,8 @@ const sealBadgeUrl = new URL("../assets/vendor/shushan/relic-orb-blue.png", impo
 const pileDrawUrl = new URL("../assets/vendor/shushan/badge-scroll.png", import.meta.url).href;
 const pileDiscardUrl = new URL("../assets/vendor/shushan/icon-talisman-paper.png", import.meta.url).href;
 const relicIconUrl = new URL("../assets/vendor/shushan/relic-umbrella.png", import.meta.url).href;
+const goldIconUrl = new URL("../assets/vendor/shushan/icon-bagua-gold.png", import.meta.url).href;
+const mapIconUrl = new URL("../assets/vendor/aigei/pile-draw.png", import.meta.url).href;
 const playerNightPatrolUrl = new URL("../assets/generated/characters/player-night-patrol.png", import.meta.url).href;
 const enemyArtUrls: Record<string, string> = {
   lantern: new URL("../assets/generated/enemies/lantern.png", import.meta.url).href,
@@ -96,6 +97,11 @@ export function App() {
     audio().setMuted(next);
   };
 
+  const returnHome = () => {
+    audio().sfx("click");
+    setGame(createGameState());
+  };
+
   const player = game.player;
 
   return (
@@ -104,6 +110,7 @@ export function App() {
         game={game}
         muted={muted}
         onMute={toggleMute}
+        onHome={returnHome}
         onRestart={() => transact(startRun)}
       />
       <main className={`screen screen-${game.screen}`}>
@@ -174,11 +181,13 @@ function TopHud({
   game,
   muted,
   onMute,
+  onHome,
   onRestart,
 }: {
   game: GameState;
   muted: boolean;
   onMute: () => void;
+  onHome: () => void;
   onRestart: () => void;
 }) {
   const player = game.player;
@@ -188,27 +197,38 @@ function TopHud({
         <div className="hero-seal">
           <img src={baguaIconUrl} alt="" draggable={false} />
         </div>
-        <HudChip icon={<img className="hud-asset-icon" src={hudBloodUrl} alt="" draggable={false} />} label={player ? `${player.hp}/${player.maxHp}` : "--"} tone="heart" />
-        <HudChip icon={<Coins />} label={player ? String(player.gold) : "--"} tone="gold" />
+        {player && (
+          <>
+            <HudChip icon={<img className="hud-asset-icon" src={hudBloodUrl} alt="" draggable={false} />} label={`${player.hp}/${player.maxHp}`} tone="heart" />
+            <HudChip icon={<img className="hud-asset-icon" src={goldIconUrl} alt="" draggable={false} />} label={String(player.gold)} tone="gold" />
+          </>
+        )}
       </div>
       <div className="hud-center">
         {player ? (
           <>
             <HudChip icon={<img className="hud-asset-icon" src={pileDrawUrl} alt="" draggable={false} />} label={`牌组 ${player.deck.length}`} />
             <HudChip icon={<img className="hud-asset-icon" src={relicIconUrl} alt="" draggable={false} />} label={`遗物 ${player.relics.length}`} />
-            <HudChip icon={<Map />} label={`${Math.min(game.floor + 1, 8)}/8`} />
+            <HudChip icon={<img className="hud-asset-icon hud-map-icon" src={mapIconUrl} alt="" draggable={false} />} label={`${Math.min(game.floor + 1, 8)}/8`} tone="map" />
           </>
         ) : (
           <span className="hud-title">夜巡录：荒庙篇</span>
         )}
       </div>
       <div className="hud-right">
+        {game.screen !== "title" && (
+          <button className="icon-btn" type="button" title="回到首页" onClick={onHome}>
+            <Home />
+          </button>
+        )}
         <button className="icon-btn" type="button" title={muted ? "打开声音" : "静音"} onClick={onMute}>
           {muted ? <VolumeX /> : <Volume2 />}
         </button>
-        <button className="icon-btn" type="button" title="重新开始" onClick={onRestart}>
-          <Settings />
-        </button>
+        {game.screen !== "title" && (
+          <button className="icon-btn" type="button" title="重新开始本局" onClick={onRestart}>
+            <RotateCcw />
+          </button>
+        )}
       </div>
     </header>
   );
@@ -679,7 +699,7 @@ function CinematicScreen({ game, onContinue }: { game: GameState; onContinue: ()
         <p className="eyebrow">战斗结算</p>
         <h3>{isBoss ? "第一大关完成" : "战利品待领取"}</h3>
         <div className="settlement-line">
-          <Coins />
+          <img src={goldIconUrl} alt="" draggable={false} />
           <span>{cinematic.rewardSummary ? `获得 ${cinematic.rewardSummary.gold} 金` : "山君伏诛，雾散天明"}</span>
         </div>
         {cinematic.rewardSummary?.relicName && (
@@ -854,11 +874,28 @@ function DeckPickScreen({
   );
 }
 
+function logTone(log: string) {
+  if (/获得|买下|金币|遗物|卡牌|金/.test(log)) return { label: "收获", tone: "gain" };
+  if (/造成|攻击|伤害|虚弱|易伤|符印|格挡|力量|塞入/.test(log)) return { label: "战斗", tone: "combat" };
+  if (/回复|升级|烧掉|休整|残灯/.test(log)) return { label: "整备", tone: "ready" };
+  if (/狐|井|书生|纸契|怪事|阴市/.test(log)) return { label: "怪事", tone: "event" };
+  return { label: "行路", tone: "route" };
+}
+
 function LogRail({ logs }: { logs: string[] }) {
   return (
     <aside className="log-rail">
-      <strong>日志</strong>
-      {logs.map((log, index) => <span key={`${log}-${index}`}>{log}</span>)}
+      <strong>夜巡札记</strong>
+      {logs.length === 0 && <span className="log-entry log-route"><small>行路</small><b>纸灯未亮，夜路还没有留下痕迹。</b></span>}
+      {logs.map((log, index) => {
+        const meta = logTone(log);
+        return (
+          <span className={`log-entry log-${meta.tone}`} key={`${log}-${index}`}>
+            <small>{meta.label}</small>
+            <b>{log}</b>
+          </span>
+        );
+      })}
     </aside>
   );
 }
