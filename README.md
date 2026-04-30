@@ -117,8 +117,8 @@ npm run desktop:dist
 GitHub CI 打包方式：
 
 ```bash
-git tag v0.2.0-demo
-git push origin v0.2.0-demo
+git tag v0.2.1-demo
+git push origin v0.2.1-demo
 ```
 
 推送 tag 后，GitHub Actions 会构建 macOS 和 Windows 包，并附加到 GitHub Release 页面。
@@ -129,6 +129,20 @@ git push origin v0.2.0-demo
 - `docs/FIRST_ACT_DEMO_ROADMAP.md`：第一关完整 demo 路线图。
 - `docs/IMPLEMENTATION_DETAILS.md`：实现细节和 AI 协作复盘。
 - `docs/PACKAGING_DISTRIBUTION.md`：客户端打包、Release、物料和运营方案。
+
+## 版权与授权
+
+《夜巡录：荒庙篇》由歸藏 × Codex 联合开发，仅供娱乐、学习和非商业展示。
+
+除另有说明外，本项目采用 `CC BY-NC 4.0` 授权：允许非商业分享和改编，但必须署名，不得移除作者信息，不得用于售卖、广告导流、商业试玩包、应用商店上架或其它商业分发。
+
+推荐署名：
+
+```text
+《夜巡录：荒庙篇》，由歸藏 × Codex 联合开发。
+```
+
+完整声明见 `LICENSE` 与 `NOTICE.md`。
 
 ## 素材说明
 

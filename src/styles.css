@@ -105,6 +105,34 @@ button:focus-visible {
   justify-content: center;
 }
 
+.hud-center-stack {
+  min-width: 0;
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+}
+
+.hud-primary-row {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.hud-credit {
+  max-width: min(48vw, 560px);
+  color: rgba(255, 239, 207, 0.58);
+  font-size: 0.7rem;
+  font-weight: 800;
+  line-height: 1.1;
+  overflow: hidden;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-shadow: 0 2px 3px rgba(0, 0, 0, 0.72);
+}
+
 .hud-right {
   justify-content: flex-end;
 }
@@ -298,6 +326,7 @@ button:focus-visible {
   text-transform: uppercase;
 }
 
+.title-brand h1,
 .title-copy h1,
 .choice-header h2,
 .route-header h2 {
@@ -306,6 +335,21 @@ button:focus-visible {
   font-size: clamp(2.4rem, 7vw, 6.4rem);
   line-height: 0.96;
   text-shadow: 0 8px 22px rgba(0, 0, 0, 0.52);
+}
+
+.title-brand {
+  display: flex;
+  align-items: center;
+  gap: clamp(16px, 2.5vw, 28px);
+  margin-top: 2px;
+}
+
+.title-brand img {
+  width: clamp(92px, 10vw, 148px);
+  height: clamp(92px, 10vw, 148px);
+  object-fit: contain;
+  border-radius: 22px;
+  filter: drop-shadow(0 18px 22px rgba(0, 0, 0, 0.54)) drop-shadow(0 0 18px rgba(215, 175, 93, 0.22));
 }
 
 .choice-header h2,
@@ -416,6 +460,102 @@ button:focus-visible {
   color: #1a2742;
   margin-top: 20px;
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55);
+}
+
+.title-about-command {
+  min-width: 178px;
+  margin-top: 0;
+  padding-inline: 34px;
+  background-size: 100% 100%;
+  background-position: center;
+  justify-content: center;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.about-panel .title-about-command {
+  min-width: 188px;
+}
+
+.about-view {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  padding: 118px clamp(22px, 6vw, 88px) 52px;
+  background:
+    linear-gradient(90deg, rgba(5, 8, 8, 0.98), rgba(5, 8, 8, 0.7) 54%, rgba(5, 8, 8, 0.36)),
+    url("../assets/generated/backgrounds/night-temple-battle.png") center / cover;
+}
+
+.about-view::after {
+  content: "";
+  position: fixed;
+  z-index: 1;
+  inset: 76px 0 0;
+  background:
+    radial-gradient(circle at 62% 26%, rgba(130, 213, 199, 0.08), transparent 34%),
+    linear-gradient(180deg, rgba(5, 8, 8, 0.66), rgba(5, 8, 8, 0.22) 34%, rgba(5, 8, 8, 0.82));
+  pointer-events: none;
+}
+
+.about-panel {
+  position: relative;
+  z-index: 2;
+  width: min(980px, 100%);
+  display: grid;
+  gap: 22px;
+}
+
+.about-panel h1 {
+  margin: 0;
+  color: #ffe2ad;
+  font-size: clamp(2.25rem, 5vw, 5.2rem);
+  line-height: 0.98;
+  text-shadow: 0 8px 22px rgba(0, 0, 0, 0.52);
+}
+
+.about-lead {
+  max-width: 72ch;
+  margin: 0;
+  color: rgba(255, 239, 207, 0.84);
+  font-size: 1.1rem;
+  line-height: 1.8;
+}
+
+.about-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.about-grid article {
+  min-height: 140px;
+  padding: 18px;
+  border: 1px solid rgba(216, 181, 105, 0.2);
+  border-radius: 8px;
+  background: rgba(8, 14, 14, 0.68);
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.24);
+}
+
+.about-grid strong {
+  display: block;
+  margin-bottom: 9px;
+  color: var(--jade-soft);
+  font-size: 1.05rem;
+}
+
+.about-grid span,
+.about-notice {
+  color: rgba(255, 239, 207, 0.74);
+  line-height: 1.7;
+}
+
+.about-notice {
+  max-width: 72ch;
+  margin: 0;
+  padding-left: 14px;
+  border-left: 3px solid rgba(215, 175, 93, 0.62);
 }
 
 .route-view,
@@ -1794,6 +1934,20 @@ button:focus-visible {
     flex-wrap: wrap;
   }
 
+  .hud-center-stack {
+    justify-items: start;
+  }
+
+  .hud-primary-row {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+
+  .hud-credit {
+    max-width: calc(100vw - 24px);
+    text-align: left;
+  }
+
   .hud-right {
     grid-column: 2;
     grid-row: 1;
@@ -1997,10 +2151,23 @@ button:focus-visible {
     height: 46px;
   }
 
+  .title-brand h1,
   .title-copy h1,
   .choice-header h2,
   .route-header h2 {
     font-size: 2.5rem;
+  }
+
+  .title-brand {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .title-brand img {
+    width: 86px;
+    height: 86px;
+    border-radius: 18px;
   }
 
   .title-view {
@@ -2009,6 +2176,14 @@ button:focus-visible {
 
   .difficulty-card em {
     font-size: 0.8rem;
+  }
+
+  .about-view {
+    padding: 42px 18px;
+  }
+
+  .about-grid {
+    grid-template-columns: 1fr;
   }
 
   .branch-map {

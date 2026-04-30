@@ -3,6 +3,7 @@ import {
   BadgeCent,
   BookOpen,
   Home,
+  Info,
   RotateCcw,
   Shield,
   SkipForward,
@@ -42,7 +43,7 @@ import {
   upgradeCard,
 } from "./game/engine";
 import { RitualAudio } from "./game/audio";
-import type { CardInstance, Difficulty, GameState, NodeType } from "./game/types";
+import type { CardInstance, Difficulty, GameState, NodeType, Screen } from "./game/types";
 import { CombatStage } from "./phaser/CombatStage";
 
 const routeNames = ["县口", "荒村", "井边", "破庙", "林道", "阴市", "山门", "正殿"];
@@ -59,6 +60,7 @@ const pileDiscardUrl = new URL("../assets/vendor/shushan/icon-talisman-paper.png
 const relicIconUrl = new URL("../assets/vendor/shushan/relic-umbrella.png", import.meta.url).href;
 const goldIconUrl = new URL("../assets/vendor/shushan/icon-bagua-gold.png", import.meta.url).href;
 const mapIconUrl = new URL("../assets/vendor/aigei/pile-draw.png", import.meta.url).href;
+const gameIconUrl = new URL("../assets/marketing/icon.png", import.meta.url).href;
 const costGemUrls: Record<string, string> = {
   empty: new URL("../assets/vendor/shushan/cost/cost-empty.png", import.meta.url).href,
   "0": new URL("../assets/vendor/shushan/cost/cost-0.png", import.meta.url).href,
@@ -100,6 +102,7 @@ export function App() {
   const [muted, setMuted] = useState(false);
   const [selectedDifficulty, setSelectedDifficulty] = useState<Difficulty>("normal");
   const [loadingDifficulty, setLoadingDifficulty] = useState<Difficulty | null>(null);
+  const [aboutReturnScreen, setAboutReturnScreen] = useState<Screen>("title");
   const audioRef = useRef<RitualAudio | null>(null);
   const loadingTimerRef = useRef<number | null>(null);
 
@@ -129,7 +132,23 @@ export function App() {
     audio().sfx("click");
     if (loadingTimerRef.current) window.clearTimeout(loadingTimerRef.current);
     setLoadingDifficulty(null);
+    setAboutReturnScreen("title");
     setGame(createGameState());
+  };
+
+  const openAbout = () => {
+    audio().sfx("click");
+    if (loadingTimerRef.current) window.clearTimeout(loadingTimerRef.current);
+    setLoadingDifficulty(null);
+    setGame((prev) => {
+      if (prev.screen !== "about") setAboutReturnScreen(prev.screen);
+      return { ...cloneState(prev), screen: "about" };
+    });
+  };
+
+  const closeAbout = () => {
+    audio().sfx("click");
+    setGame((prev) => ({ ...cloneState(prev), screen: aboutReturnScreen || "title" }));
   };
 
   const beginRun = (difficulty: Difficulty) => {
@@ -146,7 +165,7 @@ export function App() {
   const player = game.player;
 
   useEffect(() => {
-    audio().setMusicMode(game.screen === "title" ? "title" : "game");
+    audio().setMusicMode(game.screen === "title" || game.screen === "about" ? "title" : "game");
   }, [game.screen]);
 
   useEffect(
@@ -165,6 +184,7 @@ export function App() {
         muted={muted}
         onMute={toggleMute}
         onHome={returnHome}
+        onAbout={openAbout}
         onRestart={() => transact((draft) => startRun(draft, game.difficulty || selectedDifficulty))}
       />
       <main className={`screen screen-${visibleScreen}`}>
@@ -176,6 +196,7 @@ export function App() {
             onStart={beginRun}
           />
         )}
+        {!loadingDifficulty && game.screen === "about" && <AboutScreen onBack={closeAbout} onHome={returnHome} />}
         {player && game.screen === "map" && <MapScreen game={game} onChoose={(nodeId) => transact((draft) => chooseNode(draft, nodeId))} />}
         {player && game.screen === "combat" && game.combat && (
           <CombatScreen
@@ -243,12 +264,14 @@ function TopHud({
   muted,
   onMute,
   onHome,
+  onAbout,
   onRestart,
 }: {
   game: GameState;
   muted: boolean;
   onMute: () => void;
   onHome: () => void;
+  onAbout: () => void;
   onRestart: () => void;
 }) {
   const player = game.player;
@@ -266,15 +289,20 @@ function TopHud({
         )}
       </div>
       <div className="hud-center">
-        {player ? (
-          <>
+        <div className="hud-center-stack">
+          <div className="hud-primary-row">
+            {player ? (
+              <>
             <HudChip icon={<img className="hud-asset-icon" src={pileDrawUrl} alt="" draggable={false} />} label={`牌组 ${player.deck.length}`} />
             <HudChip icon={<img className="hud-asset-icon" src={relicIconUrl} alt="" draggable={false} />} label={`遗物 ${player.relics.length}`} />
             <HudChip icon={<img className="hud-asset-icon hud-map-icon" src={mapIconUrl} alt="" draggable={false} />} label={`地图 ${Math.min(game.floor + 1, 8)}/8`} tone="map" />
-          </>
-        ) : (
-          <span className="hud-title">夜巡录：荒庙篇</span>
-        )}
+              </>
+            ) : (
+              <span className="hud-title">夜巡录：荒庙篇</span>
+            )}
+          </div>
+          <span className="hud-credit">歸藏 × Codex 联合开发 · 仅供娱乐 · 非商用署名</span>
+        </div>
       </div>
       <div className="hud-right">
         {game.screen !== "title" && (
@@ -285,7 +313,10 @@ function TopHud({
         <button className="icon-btn" type="button" title={muted ? "打开声音" : "静音"} onClick={onMute}>
           {muted ? <VolumeX /> : <Volume2 />}
         </button>
-        {game.screen !== "title" && (
+        <button className="icon-btn" type="button" title="关于本作" onClick={onAbout}>
+          <Info />
+        </button>
+        {player && game.screen !== "title" && (
           <button className="icon-btn" type="button" title="重新开始本局" onClick={onRestart}>
             <RotateCcw />
           </button>
@@ -329,7 +360,10 @@ function TitleScreen({
       <video className="scene-loop-video title-loop-video" src={sceneLoopVideoUrl} autoPlay loop muted playsInline />
       <div className="title-copy">
         <p className="eyebrow">React + Phaser prototype</p>
-        <h1>荒庙夜巡</h1>
+        <div className="title-brand">
+          <img src={gameIconUrl} alt="" draggable={false} />
+          <h1>荒庙夜巡</h1>
+        </div>
         <p>
           永宁县外，夜雾倒流，荒庙重燃残香。你带着半枚城隍印上路，用符箓、剑诀、香火和奇物，在每一次岔路里拼出活下去的法门。
         </p>
@@ -352,6 +386,48 @@ function TitleScreen({
         <div className="title-actions">
           <button className="primary-command" type="button" onClick={() => onStart(selectedDifficulty)}>
             <Swords /> 开始夜巡
+          </button>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function AboutScreen({ onBack, onHome }: { onBack: () => void; onHome: () => void }) {
+  return (
+    <section className="about-view">
+      <video className="scene-loop-video title-loop-video" src={sceneLoopVideoUrl} autoPlay loop muted playsInline />
+      <div className="about-panel">
+        <p className="eyebrow">About</p>
+        <h1>关于《夜巡录：荒庙篇》</h1>
+        <p className="about-lead">
+          本游戏由歸藏与 Codex 联合开发，是一个志怪题材卡牌构筑 roguelike 原型 demo，仅供娱乐、学习和非商业展示。
+        </p>
+        <div className="about-grid">
+          <article>
+            <strong>共同创作</strong>
+            <span>歸藏提出主题、审美方向、玩法反馈和素材取舍；Codex 负责代码实现、系统迭代、UI 打磨、打包流程和工程文档。</span>
+          </article>
+          <article>
+            <strong>版权声明</strong>
+            <span>未经授权，不得移除署名，不得将本项目或其改包版本发布到其它平台，不得用于售卖、广告导流、商业试玩包或其它商业用途。</span>
+          </article>
+          <article>
+            <strong>授权方式</strong>
+            <span>除另有说明外，本仓库采用 CC BY-NC 4.0：允许分享和改编，但必须署名，且不得用于商业目的。</span>
+          </article>
+          <article>
+            <strong>素材边界</strong>
+            <span>项目包含 AI 生成素材、用户整理素材和原型资源。若进入正式发行或商业化阶段，需要重新确认素材授权或替换为自有资产。</span>
+          </article>
+        </div>
+        <p className="about-notice">署名建议：夜巡录：荒庙篇，由歸藏 × Codex 联合开发。</p>
+        <div className="title-actions">
+          <button className="primary-command" type="button" onClick={onBack}>
+            <SkipForward /> 返回
+          </button>
+          <button className="secondary-command title-about-command" type="button" onClick={onHome}>
+            <Home /> 回到首页
           </button>
         </div>
       </div>

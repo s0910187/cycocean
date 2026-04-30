@@ -1,5 +1,6 @@
 export type Screen =
   | "title"
+  | "about"
   | "map"
   | "combat"
   | "cinematic"
