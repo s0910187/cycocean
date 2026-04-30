@@ -16,7 +16,7 @@
     "preview": "vite preview --host 127.0.0.1",
     "desktop": "npm run build && electron .",
     "desktop:pack": "npm run build && electron-builder --dir",
-    "desktop:dist": "npm run build && electron-builder"
+    "desktop:dist": "npm run build && electron-builder --publish never"
   },
   "build": {
     "appId": "com.yexunlu.huangmiao",
