@@ -262,8 +262,8 @@ button:focus-visible {
 
 .title-loop-video {
   z-index: 0;
-  opacity: 0.52;
-  filter: saturate(0.92) brightness(0.86);
+  opacity: 1;
+  filter: saturate(0.94) brightness(0.78);
 }
 
 .title-view::after {
@@ -752,8 +752,8 @@ button:focus-visible {
 }
 
 .loading-loop-video {
-  opacity: 0.82;
-  filter: saturate(0.95) brightness(0.9);
+  opacity: 1;
+  filter: saturate(0.94) brightness(0.82);
 }
 
 .loading-copy {
@@ -815,9 +815,12 @@ button:focus-visible {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  opacity: 0.22;
-  filter: saturate(0.84) contrast(1.08) brightness(0.88);
-  mix-blend-mode: screen;
+  opacity: 0.16;
+  filter: blur(18px) saturate(0.8) contrast(1.05) brightness(1.1);
+  transform: scale(1.08);
+  mix-blend-mode: soft-light;
+  -webkit-mask-image: radial-gradient(ellipse at 52% 56%, #000 0%, #000 42%, transparent 72%);
+  mask-image: radial-gradient(ellipse at 52% 56%, #000 0%, #000 42%, transparent 72%);
   pointer-events: none;
 }
 
