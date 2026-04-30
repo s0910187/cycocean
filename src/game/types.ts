@@ -107,6 +107,7 @@ export interface CombatState {
   cardsPlayedThisTurn: number;
   attackPlayed: boolean;
   pulse: number;
+  hitTarget: "enemy" | "player" | null;
 }
 
 export interface EventChoiceDef {
@@ -182,5 +183,5 @@ export interface GameState {
   log: string[];
   seed: number;
   nextCardUid: number;
-  lastFx: "none" | "card" | "hit" | "block" | "reward" | "danger";
+  lastFx: "none" | "card" | "hit" | "impact" | "fire" | "lightning" | "charge" | "block" | "reward" | "danger";
 }

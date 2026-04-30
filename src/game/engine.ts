@@ -292,6 +292,7 @@ function startCombat(state: GameState, type: "combat" | "elite" | "boss") {
     cardsPlayedThisTurn: 0,
     attackPlayed: false,
     pulse: 0,
+    hitTarget: null,
   };
   player.block = 0;
   player.incense = 0;
@@ -369,7 +370,7 @@ function drawCards(state: GameState, count: number) {
 function gainBlock(state: GameState, amount: number, source = "护身") {
   mustPlayer(state).block += amount;
   addLog(state, `${source}获得 ${amount} 点格挡。`);
-  state.lastFx = "block";
+  state.lastFx = "charge";
 }
 
 function applySeal(state: GameState, amount: number, withLog = true) {
@@ -391,7 +392,8 @@ function applyVulnerable(state: GameState, amount: number) {
 }
 
 function dealEnemyDamage(state: GameState, baseAmount: number, hits = 1, context: { firstAttackBonus?: boolean } = {}) {
-  const enemy = mustCombat(state).enemy;
+  const combat = mustCombat(state);
+  const enemy = combat.enemy;
   let total = 0;
   for (let i = 0; i < hits; i += 1) {
     let amount = baseAmount;
@@ -406,13 +408,19 @@ function dealEnemyDamage(state: GameState, baseAmount: number, hits = 1, context
   }
   addLog(state, `造成 ${total} 点伤害。`);
   state.lastFx = "hit";
-  mustCombat(state).pulse += 1;
+  combat.hitTarget = "enemy";
+  combat.pulse += 1;
 }
 
 function losePlayerHp(state: GameState, amount: number, source = "失去生命") {
   const player = mustPlayer(state);
   player.hp = Math.max(0, player.hp - amount);
   addLog(state, `${source}：失去 ${amount} 点生命。`);
+  if (state.combat) {
+    state.combat.hitTarget = "player";
+    state.combat.pulse += 1;
+  }
+  state.lastFx = "impact";
   if (player.hp <= 0) {
     state.screen = "gameover";
     state.lastFx = "danger";
@@ -421,20 +429,28 @@ function losePlayerHp(state: GameState, amount: number, source = "失去生命")
 
 function enemyAttack(state: GameState, base: number, hits = 1) {
   const player = mustPlayer(state);
+  const combat = mustCombat(state);
   let total = 0;
   for (let i = 0; i < hits; i += 1) {
-    let amount = base + mustCombat(state).enemy.strength;
-    if (mustCombat(state).enemy.weak > 0) amount = Math.floor(amount * 0.75);
+    let amount = base + combat.enemy.strength;
+    if (combat.enemy.weak > 0) amount = Math.floor(amount * 0.75);
     const blocked = Math.min(player.block, amount);
     player.block -= blocked;
     const dealt = amount - blocked;
     player.hp = Math.max(0, player.hp - dealt);
     total += dealt;
   }
-  addLog(state, `${mustCombat(state).enemy.name}造成 ${total} 点伤害。`);
-  state.lastFx = "hit";
-  mustCombat(state).pulse += 1;
+  addLog(state, `${combat.enemy.name}造成 ${total} 点伤害。`);
+  state.lastFx = "impact";
+  combat.hitTarget = "player";
+  combat.pulse += 1;
   if (player.hp <= 0) state.screen = "gameover";
+}
+
+function attackFxForCard(card: CardInstance) {
+  if (card.id === "thunder" || card.id === "thunderLaw") return "lightning";
+  if (card.id === "zhusha" || card.id === "burn") return "fire";
+  return "impact";
 }
 
 export function playCard(state: GameState, uid: string) {
@@ -454,6 +470,9 @@ export function playCard(state: GameState, uid: string) {
   };
   resolveCard(state, card, context);
   if (state.screen === "gameover") return;
+  if (def.type === "attack" && ["hit", "impact", "fire", "lightning"].includes(state.lastFx)) {
+    state.lastFx = attackFxForCard(card);
+  }
 
   if (def.type === "attack") combat.attackPlayed = true;
   if (def.type === "skill" && hasRelic(state, "brokenCenser")) gainBlock(state, 1, "破香炉");
@@ -614,8 +633,10 @@ function triggerSeal(state: GameState) {
   enemy.hp = Math.max(0, enemy.hp - damage);
   addLog(state, `符印灼烧，造成 ${damage} 点伤害。`);
   enemy.seal = Math.max(0, enemy.seal - 1);
-  state.lastFx = "hit";
-  mustCombat(state).pulse += 1;
+  state.lastFx = "fire";
+  const combat = mustCombat(state);
+  combat.hitTarget = "enemy";
+  combat.pulse += 1;
 }
 
 function enemyTurn(state: GameState) {
@@ -633,7 +654,7 @@ function enemyTurn(state: GameState) {
   if (intent.type === "block") {
     enemy.block += intent.amount;
     addLog(state, `${enemy.name}获得 ${intent.amount} 点格挡。`);
-    state.lastFx = "block";
+    state.lastFx = "charge";
   }
   if (intent.type === "buff") {
     enemy.strength += intent.amount;
@@ -709,14 +730,21 @@ function createCinematicState(
   rewardSummary?: { gold: number; relicName?: string },
 ) {
   const slug = combatType === "boss" ? `boss-${enemy.id}` : enemy.id;
+  const title = combatType === "boss" ? `${enemy.name}伏诛` : combatType === "elite" ? `${enemy.name}镇压` : `${enemy.name}退散`;
+  const subtitle =
+    combatType === "boss"
+      ? "正殿门开，山雾被晨光一寸寸推回山脊。"
+      : combatType === "elite"
+        ? "破庙恶客散入残香，遗物在灰烬里发亮。"
+        : "符火将尽，夜路重新露出一截。";
   return {
     enemyId: enemy.id,
     enemyName: enemy.name,
     enemyArtKey: enemy.artKey,
     combatType,
-    title: combatType === "boss" ? "荒庙正殿已破" : `${enemy.name}退散`,
-    subtitle: combatType === "boss" ? "山君伏诛，雾从殿门往外倒流。" : "符火将尽，夜路重新露出一截。",
-    videoUrl: `/assets/generated/cinematics/victory-${slug}.webm`,
+    title,
+    subtitle,
+    videoUrl: `/assets/generated/cinematics/victory-${slug}.mp4`,
     posterUrl: `/assets/generated/cinematics/victory-${slug}-poster.png`,
     nextScreen,
     rewardSummary,

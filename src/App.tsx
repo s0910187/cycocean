@@ -69,6 +69,23 @@ const enemyArtUrls: Record<string, string> = {
   foxshade: new URL("../assets/generated/enemies/foxshade.png", import.meta.url).href,
   tigerlord: new URL("../assets/generated/enemies/tigerlord.png", import.meta.url).href,
 };
+const cinematicPosterUrls: Record<string, string> = {
+  lantern: new URL("../assets/generated/cinematics/victory-lantern-poster.png", import.meta.url).href,
+  waterghost: new URL("../assets/generated/cinematics/victory-waterghost-poster.png", import.meta.url).href,
+  templecorpse: new URL("../assets/generated/cinematics/victory-templecorpse-poster.png", import.meta.url).href,
+  macaque: new URL("../assets/generated/cinematics/victory-macaque-poster.png", import.meta.url).href,
+  warlock: new URL("../assets/generated/cinematics/victory-warlock-poster.png", import.meta.url).href,
+  foxshade: new URL("../assets/generated/cinematics/victory-foxshade-poster.png", import.meta.url).href,
+  "boss-tigerlord": new URL("../assets/generated/cinematics/victory-boss-tigerlord-poster.png", import.meta.url).href,
+};
+const cinematicVideoUrls: Record<string, string> = {
+  lantern: new URL("../assets/generated/cinematics/victory-lantern.mp4", import.meta.url).href,
+  waterghost: new URL("../assets/generated/cinematics/victory-waterghost.mp4", import.meta.url).href,
+  macaque: new URL("../assets/generated/cinematics/victory-macaque.mp4", import.meta.url).href,
+  warlock: new URL("../assets/generated/cinematics/victory-warlock.mp4", import.meta.url).href,
+  foxshade: new URL("../assets/generated/cinematics/victory-foxshade.mp4", import.meta.url).href,
+  "boss-tigerlord": new URL("../assets/generated/cinematics/victory-boss-tigerlord.mp4", import.meta.url).href,
+};
 
 export function App() {
   const [game, setGame] = useState<GameState>(() => createGameState());
@@ -103,6 +120,10 @@ export function App() {
   };
 
   const player = game.player;
+
+  useEffect(() => {
+    audio().setMusicMode(game.screen === "title" ? "title" : "game");
+  }, [game.screen]);
 
   return (
     <div className="app-frame">
@@ -652,8 +673,12 @@ function CinematicScreen({ game, onContinue }: { game: GameState; onContinue: ()
   const [videoFailed, setVideoFailed] = useState(false);
   const [videoStarted, setVideoStarted] = useState(false);
   const enemyArt = enemyArtUrls[cinematic.enemyArtKey] || enemyArtUrls.lantern;
+  const mediaKey = cinematic.combatType === "boss" ? `boss-${cinematic.enemyId}` : cinematic.enemyId;
+  const videoSrc = cinematicVideoUrls[mediaKey];
+  const posterSrc = cinematicPosterUrls[mediaKey] || cinematic.posterUrl;
   const isBoss = cinematic.combatType === "boss";
-  const shouldTryVideo = !videoFailed;
+  const isElite = cinematic.combatType === "elite";
+  const shouldTryVideo = Boolean(videoSrc) && !videoFailed;
 
   useEffect(() => {
     setVideoFailed(false);
@@ -663,8 +688,8 @@ function CinematicScreen({ game, onContinue }: { game: GameState; onContinue: ()
   return (
     <section
       className={`cinematic-view ${isBoss ? "cinematic-boss" : ""}`}
-      data-video-slot={cinematic.videoUrl}
-      data-poster-slot={cinematic.posterUrl}
+      data-video-slot={videoSrc || cinematic.videoUrl}
+      data-poster-slot={posterSrc}
     >
       <div className="cinematic-scene" aria-label={`${cinematic.enemyName}结算过场参考画面`}>
         <div className="cinematic-moon" />
@@ -672,15 +697,15 @@ function CinematicScreen({ game, onContinue }: { game: GameState; onContinue: ()
         <img className={`cinematic-enemy enemy-${cinematic.enemyArtKey}`} src={enemyArt} alt="" draggable={false} />
         <div className="cinematic-slash" />
         <div className="cinematic-caption">
-          <p className="eyebrow">{isBoss ? "Boss Clear" : "Encounter Clear"}</p>
+          <p className="eyebrow">{isBoss ? "Boss Clear" : isElite ? "Elite Clear" : "Encounter Clear"}</p>
           <h2>{cinematic.title}</h2>
           <span>{cinematic.subtitle}</span>
         </div>
         {shouldTryVideo && (
           <video
             className={`cinematic-video ${videoStarted ? "is-playing" : ""}`}
-            src={cinematic.videoUrl}
-            poster={cinematic.posterUrl}
+            src={videoSrc}
+            poster={posterSrc}
             autoPlay
             playsInline
             onPlay={() => setVideoStarted(true)}

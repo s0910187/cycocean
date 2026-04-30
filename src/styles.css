@@ -722,6 +722,7 @@ button:focus-visible {
   width: min(28vw, 330px);
   height: min(57vh, 520px);
   object-position: bottom center;
+  transform: scaleX(-1);
 }
 
 .cinematic-enemy {

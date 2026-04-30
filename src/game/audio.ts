@@ -1,6 +1,18 @@
+const bgmUrl = new URL("../../assets/audio/bgm/bronze-snare-crown.mp3", import.meta.url).href;
+const impactUrl = new URL("../../assets/audio/sfx/impact-body.wav", import.meta.url).href;
+const chargeUrl = new URL("../../assets/audio/sfx/charge-qigong.mp3", import.meta.url).href;
+const fireUrl = new URL("../../assets/audio/sfx/fire-burst.mp3", import.meta.url).href;
+const lightningUrl = new URL("../../assets/audio/sfx/lightning-hit.mp3", import.meta.url).href;
+
+type MusicMode = "title" | "game";
+type SfxName = "click" | "card" | "hit" | "impact" | "fire" | "lightning" | "charge" | "block" | "reward" | "danger" | "none";
+
 export class RitualAudio {
   private ctx: AudioContext | null = null;
   private master: GainNode | null = null;
+  private bgm: HTMLAudioElement | null = null;
+  private clips: Partial<Record<SfxName, HTMLAudioElement>> = {};
+  private mode: MusicMode = "title";
   private timer: number | null = null;
   muted = false;
 
@@ -12,37 +24,94 @@ export class RitualAudio {
     this.master = this.ctx.createGain();
     this.master.gain.value = 0.16;
     this.master.connect(this.ctx.destination);
-    this.startMusic();
+    this.prepareClips();
+    this.prepareBgm();
+    this.ctx.resume?.().catch(() => undefined);
+    this.playBgm();
+  }
+
+  setMusicMode(mode: MusicMode) {
+    this.mode = mode;
+    this.updateBgmVolume();
+    this.playBgm();
   }
 
   setMuted(muted: boolean) {
     this.muted = muted;
     if (this.master) this.master.gain.value = muted ? 0 : 0.16;
+    this.updateBgmVolume();
+    if (muted) this.bgm?.pause();
+    else this.playBgm();
   }
 
-  sfx(name: "click" | "card" | "hit" | "block" | "reward" | "danger" | "none") {
+  sfx(name: SfxName) {
     if (name === "none") return;
     this.init();
     if (!this.ctx || this.muted) return;
+    this.ctx.resume?.().catch(() => undefined);
+    if (name === "impact" || name === "hit") {
+      this.playClip("impact", 0.64);
+      return;
+    }
+    if (name === "fire") {
+      this.playClip("fire", 0.52);
+      return;
+    }
+    if (name === "lightning") {
+      this.playClip("lightning", 0.5);
+      return;
+    }
+    if (name === "charge" || name === "block" || name === "card") {
+      this.playClip("charge", name === "card" ? 0.22 : 0.34);
+      return;
+    }
     if (name === "click") this.tone(520, 0.035, "triangle", 0.025);
-    if (name === "card") {
-      this.tone(410, 0.07, "triangle", 0.07);
-      this.tone(210, 0.08, "square", 0.025, 0.03);
-    }
-    if (name === "hit") {
-      this.tone(90, 0.11, "sawtooth", 0.08);
-      this.tone(58, 0.18, "sine", 0.06);
-    }
-    if (name === "block") {
-      this.tone(330, 0.14, "triangle", 0.055);
-      this.tone(495, 0.13, "sine", 0.025, 0.05);
-    }
     if (name === "reward") {
       this.tone(330, 0.09, "triangle", 0.045);
       this.tone(440, 0.1, "triangle", 0.045, 0.09);
       this.tone(660, 0.15, "triangle", 0.04, 0.19);
     }
     if (name === "danger") this.tone(110, 0.32, "sawtooth", 0.07);
+  }
+
+  private prepareClips() {
+    if (this.clips.impact) return;
+    this.clips = {
+      impact: new Audio(impactUrl),
+      fire: new Audio(fireUrl),
+      lightning: new Audio(lightningUrl),
+      charge: new Audio(chargeUrl),
+    };
+    Object.values(this.clips).forEach((clip) => {
+      if (!clip) return;
+      clip.preload = "auto";
+    });
+  }
+
+  private prepareBgm() {
+    if (this.bgm) return;
+    this.bgm = new Audio(bgmUrl);
+    this.bgm.loop = true;
+    this.bgm.preload = "auto";
+    this.updateBgmVolume();
+  }
+
+  private updateBgmVolume() {
+    if (!this.bgm) return;
+    this.bgm.volume = this.muted ? 0 : this.mode === "title" ? 0.44 : 0.16;
+  }
+
+  private playBgm() {
+    if (!this.bgm || this.muted) return;
+    this.bgm.play().catch(() => undefined);
+  }
+
+  private playClip(name: "impact" | "fire" | "lightning" | "charge", volume: number) {
+    const source = this.clips[name];
+    if (!source) return;
+    const clip = source.cloneNode(true) as HTMLAudioElement;
+    clip.volume = volume;
+    clip.play().catch(() => undefined);
   }
 
   private tone(freq: number, duration = 0.18, type: OscillatorType = "sine", gain = 0.08, delay = 0) {

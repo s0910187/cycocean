@@ -49,6 +49,7 @@ interface StageSnapshot {
   playerMaxHp: number;
   playerBlock: number;
   pulse: number;
+  hitTarget: "enemy" | "player" | null;
 }
 
 class NightBattleScene extends Phaser.Scene {
@@ -63,6 +64,8 @@ class NightBattleScene extends Phaser.Scene {
   private enemyName?: Phaser.GameObjects.Text;
   private lastEnemyKey = "";
   private lastPulse = 0;
+  private playerBaseX = 0;
+  private enemyBaseX = 0;
   private playerBaseY = 0;
   private enemyBaseY = 0;
   private snapshot: StageSnapshot | null = null;
@@ -165,11 +168,13 @@ class NightBattleScene extends Phaser.Scene {
     }
     const enemySize = ENEMY_STAGE_SIZE[this.snapshot.enemyKey] || ENEMY_STAGE_SIZE.lantern;
     this.enemyBaseY = height * enemySize.y;
+    this.enemyBaseX = width * 0.74;
+    this.playerBaseX = width * 0.28;
     this.playerBaseY = height * 0.66;
-    this.enemy.setPosition(width * 0.74, this.enemyBaseY);
+    this.enemy.setPosition(this.enemyBaseX, this.enemyBaseY);
     this.enemy.setDisplaySize(width * enemySize.width, height * enemySize.height);
-    this.player?.setPosition(width * 0.28, this.playerBaseY);
-    this.playerSprite?.setDisplaySize(width * 0.2, height * 0.48);
+    this.player?.setPosition(this.playerBaseX, this.playerBaseY);
+    this.playerSprite?.setDisplaySize(width * 0.2, height * 0.48).setFlipX(true);
     this.playerShadow?.setSize(width * 0.18, height * 0.055);
     this.enemyName?.setText(this.snapshot.enemyName).setPosition(width * 0.74, height * 0.3);
     this.sealText
@@ -179,15 +184,40 @@ class NightBattleScene extends Phaser.Scene {
     if (this.snapshot.pulse !== this.lastPulse) {
       this.lastPulse = this.snapshot.pulse;
       this.cameras.main.shake(110, 0.004);
-      this.tweens.add({
-        targets: this.enemy,
-        scaleX: this.enemy.scaleX * 1.04,
-        scaleY: this.enemy.scaleY * 1.04,
-        duration: 80,
-        yoyo: true,
-      });
+      this.shakeTarget(this.snapshot.hitTarget);
     }
     this.fog?.setPosition(0, 0);
+  }
+
+  private shakeTarget(target: StageSnapshot["hitTarget"]) {
+    if (target === "enemy" && this.enemy) {
+      this.tweens.killTweensOf(this.enemy);
+      this.enemy.setX(this.enemyBaseX);
+      this.tweens.add({
+        targets: this.enemy,
+        x: this.enemyBaseX + 18,
+        scaleX: this.enemy.scaleX * 1.04,
+        scaleY: this.enemy.scaleY * 1.04,
+        duration: 58,
+        yoyo: true,
+        repeat: 2,
+        ease: "Sine.easeInOut",
+        onComplete: () => this.enemy?.setPosition(this.enemyBaseX, this.enemyBaseY),
+      });
+    }
+    if (target === "player" && this.player) {
+      this.tweens.killTweensOf(this.player);
+      this.player.setX(this.playerBaseX);
+      this.tweens.add({
+        targets: this.player,
+        x: this.playerBaseX - 16,
+        duration: 54,
+        yoyo: true,
+        repeat: 2,
+        ease: "Sine.easeInOut",
+        onComplete: () => this.player?.setPosition(this.playerBaseX, this.playerBaseY),
+      });
+    }
   }
 }
 
@@ -231,6 +261,7 @@ export function CombatStage({ combat, player }: CombatStageProps) {
       playerMaxHp: player.maxHp,
       playerBlock: player.block,
       pulse: combat.pulse,
+      hitTarget: combat.hitTarget,
     };
 
     const push = () => {
