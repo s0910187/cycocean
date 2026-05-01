@@ -23,7 +23,7 @@ export const CARD_DEFS: Record<string, CardDef> = {
     type: "attack",
     rarity: "basic",
     cost: 1,
-    text: ["造成 4 點傷害。施加 1 層污染指數。", "造成 6 點傷害。施加 2 層污染指數。"],
+    text: ["造成 4 點傷害。施加 1 層清除污染程度。", "造成 6 點傷害。施加 2 層清除污染程度。"],
   },
   taomu: {
     id: "taomu",
@@ -55,7 +55,7 @@ export const CARD_DEFS: Record<string, CardDef> = {
     type: "skill",
     rarity: "common",
     cost: 1,
-    text: ["獲得 8 點防護與 1 點潮力。", "獲得 11 點防護與 1 點潮力。"],
+    text: ["獲得 8 點防護與 1 點海洋保育能力。", "獲得 11 點防護與 1 點海洋保育能力。"],
   },
   incense: {
     id: "incense",
@@ -64,7 +64,7 @@ export const CARD_DEFS: Record<string, CardDef> = {
     rarity: "common",
     cost: 0,
     exhaust: true,
-    text: ["獲得 2 點潮力。消耗。", "獲得 3 點潮力。消耗。"],
+    text: ["獲得 2 點海洋保育能力。消耗。", "獲得 3 點海洋保育能力。消耗。"],
   },
   windScroll: {
     id: "windScroll",
@@ -72,7 +72,7 @@ export const CARD_DEFS: Record<string, CardDef> = {
     type: "skill",
     rarity: "common",
     cost: 0,
-    text: ["抽 1 張牌。若敵人有污染指數，額外抽 1 張。", "抽 1 張牌。若敵人有污染指數，額外抽 2 張。"],
+    text: ["抽 1 張牌。若敵人有清除污染程度，額外抽 1 張。", "抽 1 張牌。若敵人有清除污染程度，額外抽 2 張。"],
   },
   thunder: {
     id: "thunder",
@@ -80,7 +80,7 @@ export const CARD_DEFS: Record<string, CardDef> = {
     type: "attack",
     rarity: "common",
     cost: 2,
-    text: ["造成 10 點傷害。若敵人有污染指數，額外造成 6 點傷害。", "造成 14 點傷害。若敵人有污染指數，額外造成 8 點傷害。"],
+    text: ["造成 10 點傷害。若敵人有清除污染程度，額外造成 6 點傷害。", "造成 14 點傷害。若敵人有清除污染程度，額外造成 8 點傷害。"],
   },
   bell: {
     id: "bell",
@@ -104,7 +104,7 @@ export const CARD_DEFS: Record<string, CardDef> = {
     type: "skill",
     rarity: "uncommon",
     cost: 2,
-    text: ["獲得 4 點防護。施加 4 層污染指數。", "獲得 6 點防護。施加 5 層污染指數。"],
+    text: ["獲得 4 點防護。施加 4 層清除污染程度。", "獲得 6 點防護。施加 5 層清除污染程度。"],
   },
   burn: {
     id: "burn",
@@ -112,7 +112,7 @@ export const CARD_DEFS: Record<string, CardDef> = {
     type: "attack",
     rarity: "uncommon",
     cost: 1,
-    text: ["移除所有污染指數。每層造成 5 點傷害。", "移除所有污染指數。每層造成 7 點傷害。"],
+    text: ["移除所有清除污染程度。每層造成 5 點傷害。", "移除所有清除污染程度。每層造成 7 點傷害。"],
   },
   paper: {
     id: "paper",
@@ -128,7 +128,7 @@ export const CARD_DEFS: Record<string, CardDef> = {
     type: "attack",
     rarity: "uncommon",
     cost: 2,
-    text: ["造成 14 點傷害。若敵人有污染指數，獲得 1 點能量。", "造成 18 點傷害。若敵人有污染指數，獲得 1 點能量。"],
+    text: ["造成 14 點傷害。若敵人有清除污染程度，獲得 1 點能量。", "造成 18 點傷害。若敵人有清除污染程度，獲得 1 點能量。"],
   },
   mirror: {
     id: "mirror",
@@ -136,7 +136,7 @@ export const CARD_DEFS: Record<string, CardDef> = {
     type: "skill",
     rarity: "uncommon",
     cost: 1,
-    text: ["施加 2 層污染指數與 2 層易傷。", "施加 3 層污染指數與 2 層易傷。"],
+    text: ["施加 2 層清除污染程度與 2 層易傷。", "施加 3 層清除污染程度與 2 層易傷。"],
   },
   refine: {
     id: "refine",
@@ -177,7 +177,7 @@ export const CARD_DEFS: Record<string, CardDef> = {
     type: "power",
     rarity: "rare",
     cost: 2,
-    text: ["法門：每回合獲得 3 點防護與 1 點潮力。", "法門：每回合獲得 5 點防護與 1 點潮力。"],
+    text: ["法門：每回合獲得 3 點防護與 1 點海洋保育能力。", "法門：每回合獲得 5 點防護與 1 點海洋保育能力。"],
   },
   thunderLaw: {
     id: "thunderLaw",
@@ -185,7 +185,7 @@ export const CARD_DEFS: Record<string, CardDef> = {
     type: "attack",
     rarity: "rare",
     cost: 3,
-    text: ["消耗所有潮力。造成 12 點傷害，每點潮力額外 +5。", "消耗所有潮力。造成 16 點傷害，每點潮力額外 +6。"],
+    text: ["消耗所有海洋保育能力。造成 12 點傷害，每點海洋保育能力額外 +5。", "消耗所有海洋保育能力。造成 16 點傷害，每點海洋保育能力額外 +6。"],
   },
   paperBlade: {
     id: "paperBlade",
@@ -213,13 +213,13 @@ export const CARD_POOL = Object.keys(CARD_DEFS).filter((id) => {
 });
 
 export const RELICS: RelicDef[] = [
-  { id: "bronzeMirror", name: "牽罟漁網", text: "每場戰鬥開始時，施加 2 層污染指數。" },
+  { id: "bronzeMirror", name: "牽罟漁網", text: "每場戰鬥開始時，施加 2 層清除污染程度。" },
   { id: "taomuTassel", name: "剪除廢棄漁線", text: "每場戰鬥第一張攻擊牌額外造成 4 點傷害。" },
-  { id: "citySeal", name: "海洋教育中心識別章", text: "每場戰鬥第一回合獲得 2 點潮力。" },
+  { id: "citySeal", name: "海洋教育中心識別章", text: "每場戰鬥第一回合獲得 2 點海洋保育能力。" },
   { id: "brokenCenser", name: "石花菜採集袋", text: "每打出一張技能牌，獲得 1 點防護。" },
   { id: "nightSand", name: "貝殼圖鑑", text: "每場戰鬥第一回合多抽 1 張牌。" },
   { id: "oldUmbrella", name: "防水夾克", text: "每場戰鬥第一回合獲得 6 點防護。" },
-  { id: "thunderWood", name: "塑膠食物鏈卡", text: "污染指數每層傷害提高 1。" },
+  { id: "thunderWood", name: "塑膠食物鏈卡", text: "清除污染程度每層傷害提高 1。" },
   { id: "blankPage", name: "布袋港調查筆記", text: "每回合每打出 3 張牌，抽 1 張牌。" },
   { id: "paperHorse", name: "無人機空拍", text: "每場戰鬥第一回合獲得 1 點額外能量。" },
   { id: "foxCoin", name: "漁港義賣收入", text: "獲得時立即得到 60 補給費。", onGain: "gold60" },

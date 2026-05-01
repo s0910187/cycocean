@@ -398,7 +398,7 @@ function startPlayerTurn(state: GameState) {
     }
     if (hasRelic(state, "citySeal")) {
       player.incense += 2;
-      addLog(state, "海洋教育中心識別章發亮，獲得 2 點潮力。");
+      addLog(state, "海洋教育中心識別章發亮，獲得 2 點海洋保育能力。");
     }
     if (hasRelic(state, "oldUmbrella")) gainBlock(state, 6, "防水夾克");
   }
@@ -406,7 +406,7 @@ function startPlayerTurn(state: GameState) {
   if (player.powers.citygod) {
     gainBlock(state, player.powers.citygod, "呼叫中心支援");
     player.incense += 1;
-    addLog(state, "中心支援到位，潮力 +1。");
+    addLog(state, "中心支援到位，海洋保育能力 +1。");
   }
 
   const drawCount = 5 + (player.powers.nightEye || 0) + (combat.turn === 1 && hasRelic(state, "nightSand") ? 1 : 0);
@@ -436,7 +436,7 @@ function gainBlock(state: GameState, amount: number, source = "防護") {
 function applySeal(state: GameState, amount: number, withLog = true) {
   const enemy = mustCombat(state).enemy;
   enemy.seal += amount;
-  if (withLog) addLog(state, `${enemy.name}累積 ${amount} 層污染指數。`);
+  if (withLog) addLog(state, `${enemy.name}累積 ${amount} 層清除污染程度。`);
 }
 
 function applyWeak(state: GameState, amount: number) {
@@ -582,11 +582,11 @@ function resolveCard(state: GameState, card: CardInstance, context: { firstAttac
     case "golden":
       gainBlock(state, value(card, 8, 11), cardName(card));
       player.incense += 1;
-      addLog(state, "潮力 +1。");
+      addLog(state, "海洋保育能力 +1。");
       break;
     case "incense":
       player.incense += value(card, 2, 3);
-      addLog(state, `潮力 +${value(card, 2, 3)}。`);
+      addLog(state, `海洋保育能力 +${value(card, 2, 3)}。`);
       break;
     case "windScroll":
       drawCards(state, 1 + (enemy.seal > 0 ? value(card, 1, 2) : 0));
@@ -613,9 +613,9 @@ function resolveCard(state: GameState, card: CardInstance, context: { firstAttac
       enemy.seal = 0;
       if (layers > 0) {
         dealEnemyDamage(state, layers * value(card, 5, 7));
-        addLog(state, `引爆 ${layers} 層污染指數。`);
+        addLog(state, `引爆 ${layers} 層清除污染程度。`);
       } else {
-        addLog(state, "海域乾淨，沒有污染指數可以引爆。");
+        addLog(state, "海域乾淨，沒有清除污染程度可以引爆。");
       }
       break;
     }
@@ -662,7 +662,7 @@ function resolveCard(state: GameState, card: CardInstance, context: { firstAttac
       const spent = player.incense;
       player.incense = 0;
       dealEnemyDamage(state, value(card, 12, 16) + spent * value(card, 5, 6), 1, context);
-      addLog(state, `全力清污消耗 ${spent} 點潮力。`);
+      addLog(state, `全力清污消耗 ${spent} 點海洋保育能力。`);
       break;
     }
     case "paperBlade":
@@ -692,7 +692,7 @@ function triggerSeal(state: GameState) {
   const perLayer = 3 + (hasRelic(state, "thunderWood") ? 1 : 0);
   const damage = enemy.seal * perLayer;
   enemy.hp = Math.max(0, enemy.hp - damage);
-  addLog(state, `污染指數爆發，造成 ${damage} 點傷害。`);
+  addLog(state, `清除污染程度爆發，造成 ${damage} 點傷害。`);
   enemy.seal = Math.max(0, enemy.seal - 1);
   state.lastFx = "fire";
   const combat = mustCombat(state);

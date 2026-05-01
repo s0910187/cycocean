@@ -366,7 +366,7 @@ function TitleScreen({
           <h1>守浪人：布袋篇</h1>
         </div>
         <p>
-          颱風過後，布袋外海傳來警報。你是嘉義縣海洋教育中心培訓的守浪志工，別上識別章出發，用清污行動、執法扣押和潮力，在每一次分岔路線裡拼出守護海洋的方法。
+          颱風過後，布袋外海傳來警報。你是嘉義縣海洋教育中心培訓的守浪志工，別上識別章出發，用清污行動、執法扣押和海洋保育能力，在每一次分岔路線裡拼出守護海洋的方法。
         </p>
         <div className="difficulty-picker" role="radiogroup" aria-label="难度选择">
           {difficultyOptions.map((option) => (
@@ -415,7 +415,7 @@ function AboutScreen({ onBack, onHome }: { onBack: () => void; onHome: () => voi
           </article>
           <article>
             <strong>遊戲玩法</strong>
-            <span>每回合獲得能量並抽牌，打出攻擊牌造成傷害，技能牌獲得防護或特殊效果，法門牌建立長期能力。積累污染指數可引爆大傷害。</span>
+            <span>每回合獲得能量並抽牌，打出攻擊牌造成傷害，技能牌獲得防護或特殊效果，法門牌建立長期能力。積累清除污染程度可引爆大傷害。</span>
           </article>
           <article>
             <strong>關於中心</strong>
@@ -656,7 +656,7 @@ function CombatScreen({ game, onPlayCard, onEndTurn }: { game: GameState; onPlay
           <HealthStrip current={player.hp} max={player.maxHp} />
           <div className="status-stack">
             <StatusBadge icon={<img src={blockBadgeUrl} alt="" draggable={false} />} text={`防護 ${player.block}`} />
-            <StatusBadge icon={<img src={incenseBadgeUrl} alt="" draggable={false} />} text={`潮力 ${player.incense}`} />
+            <StatusBadge icon={<img src={incenseBadgeUrl} alt="" draggable={false} />} text={`海洋保育能力 ${player.incense}`} />
             {player.weak > 0 && <StatusBadge text={`虛弱 ${player.weak}`} />}
             {player.powers.nightEye && <StatusBadge text="監測儀" />}
             {player.powers.citygod && <StatusBadge text="中心支援" />}
