@@ -882,6 +882,7 @@ function CinematicScreen({ game, onContinue }: { game: GameState; onContinue: ()
         </div>
         {shouldTryVideo && (
           <video
+            key={mediaKey}
             className={`cinematic-video ${videoStarted ? "is-playing" : ""}`}
             src={videoSrc || cinematic.videoUrl}
             poster={posterSrc}

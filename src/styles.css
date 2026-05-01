@@ -1128,17 +1128,7 @@ button:focus-visible {
 }
 
 .cinematic-slash {
-  position: absolute;
-  z-index: 3;
-  left: 42%;
-  top: 19%;
-  width: 18%;
-  height: 70%;
-  transform: rotate(21deg);
-  background: linear-gradient(90deg, transparent, rgba(255, 244, 199, 0.75), rgba(232, 95, 75, 0.3), transparent);
-  filter: blur(2px) drop-shadow(0 0 18px rgba(248, 222, 142, 0.32));
-  opacity: 0.58;
-  clip-path: polygon(44% 0, 58% 0, 52% 100%, 38% 100%);
+  display: none;
 }
 
 .cinematic-caption {
