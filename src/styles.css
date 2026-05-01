@@ -1547,11 +1547,9 @@ button:focus-visible {
 }
 
 .energy-orb span {
-  font-size: 1rem;
+  font-size: 2.2rem;
   line-height: 1;
   color: rgba(236, 255, 255, 0.78);
-  align-self: flex-end;
-  margin-bottom: 8px;
 }
 
 .end-turn {
