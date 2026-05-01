@@ -335,6 +335,7 @@ button:focus-visible {
   font-size: clamp(2.4rem, 7vw, 6.4rem);
   line-height: 0.96;
   text-shadow: 0 8px 22px rgba(0, 0, 0, 0.52);
+  white-space: nowrap;
 }
 
 .title-brand {
