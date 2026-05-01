@@ -213,16 +213,16 @@ export const CARD_POOL = Object.keys(CARD_DEFS).filter((id) => {
 });
 
 export const RELICS: RelicDef[] = [
-  { id: "bronzeMirror", name: "舊式聲納儀", text: "每場戰鬥開始時，施加 2 層污染指數。" },
-  { id: "taomuTassel", name: "破網剪刀", text: "每場戰鬥第一張攻擊牌額外造成 4 點傷害。" },
+  { id: "bronzeMirror", name: "牽罟漁網", text: "每場戰鬥開始時，施加 2 層污染指數。" },
+  { id: "taomuTassel", name: "剪除廢棄漁線", text: "每場戰鬥第一張攻擊牌額外造成 4 點傷害。" },
   { id: "citySeal", name: "海洋教育中心識別章", text: "每場戰鬥第一回合獲得 2 點潮力。" },
-  { id: "brokenCenser", name: "舊氧氣筒", text: "每打出一張技能牌，獲得 1 點防護。" },
-  { id: "nightSand", name: "生物發光樣本", text: "每場戰鬥第一回合多抽 1 張牌。" },
+  { id: "brokenCenser", name: "石花菜採集袋", text: "每打出一張技能牌，獲得 1 點防護。" },
+  { id: "nightSand", name: "貝殼圖鑑", text: "每場戰鬥第一回合多抽 1 張牌。" },
   { id: "oldUmbrella", name: "防水夾克", text: "每場戰鬥第一回合獲得 6 點防護。" },
-  { id: "thunderWood", name: "電鰻標本", text: "污染指數每層傷害提高 1。" },
-  { id: "blankPage", name: "布袋海域調查筆記", text: "每回合每打出 3 張牌，抽 1 張牌。" },
-  { id: "paperHorse", name: "迷你無人機", text: "每場戰鬥第一回合獲得 1 點額外能量。" },
-  { id: "foxCoin", name: "漁港舊錢幣", text: "獲得時立即得到 60 金。", onGain: "gold60" },
+  { id: "thunderWood", name: "塑膠食物鏈卡", text: "污染指數每層傷害提高 1。" },
+  { id: "blankPage", name: "布袋港調查筆記", text: "每回合每打出 3 張牌，抽 1 張牌。" },
+  { id: "paperHorse", name: "無人機空拍", text: "每場戰鬥第一回合獲得 1 點額外能量。" },
+  { id: "foxCoin", name: "漁港義賣收入", text: "獲得時立即得到 60 補給費。", onGain: "gold60" },
 ];
 
 export const ENEMIES: Record<string, EnemyTemplate> = {
