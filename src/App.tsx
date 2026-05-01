@@ -46,7 +46,7 @@ import { RitualAudio } from "./game/audio";
 import type { CardInstance, Difficulty, GameState, NodeType, Screen } from "./game/types";
 import { CombatStage } from "./phaser/CombatStage";
 
-const routeNames = ["县口", "荒村", "井边", "破庙", "林道", "阴市", "山门", "正殿"];
+const routeNames = ["布袋港", "近岸海域", "珊瑚礁區", "深水區", "外海航道", "漁港外圍", "禁漁區", "外海決戰區"];
 const hudBloodUrl = new URL("../assets/vendor/shushan/icon-blood-orb.png", import.meta.url).href;
 const baguaIconUrl = new URL("../assets/vendor/shushan/icon-bagua-gold.png", import.meta.url).href;
 const talismanIconUrl = new URL("../assets/vendor/shushan/icon-talisman-paper.png", import.meta.url).href;
@@ -91,6 +91,7 @@ const cinematicPosterUrls: Record<string, string> = {
 const cinematicVideoUrls: Record<string, string> = {
   lantern: new URL("../assets/generated/cinematics/victory-lantern.mp4", import.meta.url).href,
   waterghost: new URL("../assets/generated/cinematics/victory-waterghost.mp4", import.meta.url).href,
+  templecorpse: new URL("../assets/generated/cinematics/victory-templecorpse.mp4", import.meta.url).href,
   macaque: new URL("../assets/generated/cinematics/victory-macaque.mp4", import.meta.url).href,
   warlock: new URL("../assets/generated/cinematics/victory-warlock.mp4", import.meta.url).href,
   foxshade: new URL("../assets/generated/cinematics/victory-foxshade.mp4", import.meta.url).href,
@@ -235,25 +236,25 @@ export function App() {
         )}
         {player && game.screen === "remove" && (
           <DeckPickScreen
-            title="烧掉一张牌"
-            desc={`花费 ${game.pendingRemove?.cost || 0} 金。选中的牌会从牌组中移除。`}
+            title="報廢一張牌"
+            desc={`花費 ${game.pendingRemove?.cost || 0} 補給費。選中的牌會從牌組中移除。`}
             cards={player.deck}
-            actionLabel="烧掉"
+            actionLabel="報廢"
             onPick={(uid) => transact((draft) => removeCard(draft, uid))}
           />
         )}
         {player && game.screen === "upgrade" && (
           <DeckPickScreen
-            title="升级一张牌"
-            desc="朱砂重新落笔，旧符也能生出新锋。"
+            title="強化一張牌"
+            desc="選擇一張牌進行強化升級，提升其效果。"
             cards={player.deck.filter((card) => !card.upgraded && cardDef(card).rarity !== "status")}
-            actionLabel="升级"
+            actionLabel="強化"
             onPick={(uid) => transact((draft) => upgradeCard(draft, uid))}
             emptyAction={() => transact(goMap)}
           />
         )}
-        {game.screen === "gameover" && <EndScreen title="夜路尽头" body="雾声合拢，城隍残印沉了下去。可荒庙仍在，下一次夜巡会更懂取舍。" onStart={() => transact(startRun)} />}
-        {game.screen === "victory" && <EndScreen title="雾散天明" body="山君伏诛，荒庙的门终于被晨光推开。你带回来的不是答案，而是一套在夜里活下来的法门。" onStart={() => transact(startRun)} />}
+        {game.screen === "gameover" && <EndScreen title="任務失敗" body="海浪沒有停歇，污染仍在蔓延。但每一次出航都是學習，下次你會更懂得取捨。" onStart={() => transact(startRun)} />}
+        {game.screen === "victory" && <EndScreen title="海洋守護成功" body="非法捕鯨母船引擎熄滅，沉入布袋外海的深藍。你把識別章別回胸口，遠處燈塔重新亮起。嘉義縣海洋教育中心的任務從未結束——每一片乾淨的海，都是有人守過的結果。" onStart={() => transact(startRun)} />}
       </main>
     </div>
   );
@@ -293,20 +294,20 @@ function TopHud({
           <div className="hud-primary-row">
             {player ? (
               <>
-            <HudChip icon={<img className="hud-asset-icon" src={pileDrawUrl} alt="" draggable={false} />} label={`牌组 ${player.deck.length}`} />
-            <HudChip icon={<img className="hud-asset-icon" src={relicIconUrl} alt="" draggable={false} />} label={`遗物 ${player.relics.length}`} />
-            <HudChip icon={<img className="hud-asset-icon hud-map-icon" src={mapIconUrl} alt="" draggable={false} />} label={`地图 ${Math.min(game.floor + 1, 8)}/8`} tone="map" />
+            <HudChip icon={<img className="hud-asset-icon" src={pileDrawUrl} alt="" draggable={false} />} label={`牌組 ${player.deck.length}`} />
+            <HudChip icon={<img className="hud-asset-icon" src={relicIconUrl} alt="" draggable={false} />} label={`遺物 ${player.relics.length}`} />
+            <HudChip icon={<img className="hud-asset-icon hud-map-icon" src={mapIconUrl} alt="" draggable={false} />} label={`地圖 ${Math.min(game.floor + 1, 8)}/8`} tone="map" />
               </>
             ) : (
-              <span className="hud-title">夜巡录：荒庙篇</span>
+              <span className="hud-title">守浪人：布袋篇</span>
             )}
           </div>
-          <span className="hud-credit">歸藏 × Codex 联合开发 · 仅供娱乐 · 非商用署名</span>
+          <span className="hud-credit">嘉義縣海洋教育中心</span>
         </div>
       </div>
       <div className="hud-right">
         {game.screen !== "title" && (
-          <button className="icon-btn" type="button" title="回到首页" onClick={onHome}>
+          <button className="icon-btn" type="button" title="回到首頁" onClick={onHome}>
             <Home />
           </button>
         )}
@@ -341,9 +342,9 @@ const difficultyOptions: Array<{
   tag: string;
   desc: string;
 }> = [
-  { id: "story", name: "演示", tag: "拍视频", desc: "血量更高，敌人更松，开局多一点循环支撑。" },
-  { id: "normal", name: "标准", tag: "推荐", desc: "完整路线体验，数值更稳，不会第一关就太刮人。" },
-  { id: "hard", name: "劫难", tag: "挑战", desc: "敌人更硬更痛，适合后面调平衡时压测。" },
+  { id: "story", name: "演示", tag: "體驗版", desc: "血量更高，敵人更鬆，適合初次體驗。" },
+  { id: "normal", name: "標準", tag: "推薦", desc: "完整路線體驗，數值穩定，適合一般玩家。" },
+  { id: "hard", name: "挑戰", tag: "進階", desc: "敵人更硬更痛，適合熟悉玩法後挑戰。" },
 ];
 
 function TitleScreen({
@@ -362,10 +363,10 @@ function TitleScreen({
         <p className="eyebrow">React + Phaser prototype</p>
         <div className="title-brand">
           <img src={gameIconUrl} alt="" draggable={false} />
-          <h1>荒庙夜巡</h1>
+          <h1>守浪人：布袋篇</h1>
         </div>
         <p>
-          永宁县外，夜雾倒流，荒庙重燃残香。你带着半枚城隍印上路，用符箓、剑诀、香火和奇物，在每一次岔路里拼出活下去的法门。
+          颱風過後，布袋外海傳來警報。你是嘉義縣海洋教育中心培訓的守浪志工，別上識別章出發，用清污行動、執法扣押和潮力，在每一次分岔路線裡拼出守護海洋的方法。
         </p>
         <div className="difficulty-picker" role="radiogroup" aria-label="难度选择">
           {difficultyOptions.map((option) => (
@@ -385,7 +386,7 @@ function TitleScreen({
         </div>
         <div className="title-actions">
           <button className="primary-command" type="button" onClick={() => onStart(selectedDifficulty)}>
-            <Swords /> 开始夜巡
+            <Swords /> 開始守浪
           </button>
         </div>
       </div>
@@ -399,35 +400,35 @@ function AboutScreen({ onBack, onHome }: { onBack: () => void; onHome: () => voi
       <video className="scene-loop-video title-loop-video" src={sceneLoopVideoUrl} autoPlay loop muted playsInline />
       <div className="about-panel">
         <p className="eyebrow">About</p>
-        <h1>关于《夜巡录：荒庙篇》</h1>
+        <h1>關於《守浪人：布袋篇》</h1>
         <p className="about-lead">
-          本游戏由歸藏与 Codex 联合开发，是一个志怪题材卡牌构筑 roguelike 原型 demo，仅供娱乐、学习和非商业展示。
+          本遊戲由嘉義縣海洋教育中心製作，以海洋保育與海洋資源永續為主題。
         </p>
         <div className="about-grid">
           <article>
-            <strong>共同创作</strong>
-            <span>歸藏提出主题、审美方向、玩法反馈和素材取舍；Codex 负责代码实现、系统迭代、UI 打磨、打包流程和工程文档。</span>
+            <strong>遊戲主題</strong>
+            <span>你扮演嘉義縣海洋教育中心培訓的守浪志工，在布袋外海清除污染、驅離盜獵、修復珊瑚礁，最終對抗非法捕鯨母船。</span>
           </article>
           <article>
-            <strong>版权声明</strong>
-            <span>未经授权，不得移除署名，不得将本项目或其改包版本发布到其它平台，不得用于售卖、广告导流、商业试玩包或其它商业用途。</span>
+            <strong>教育目標</strong>
+            <span>透過卡牌構築 roguelike 的遊戲形式，讓玩家了解海洋污染、外來物種入侵、非法捕撈等海洋保育議題。</span>
           </article>
           <article>
-            <strong>授权方式</strong>
-            <span>除另有说明外，本仓库采用 CC BY-NC 4.0：允许分享和改编，但必须署名，且不得用于商业目的。</span>
+            <strong>遊戲玩法</strong>
+            <span>每回合獲得能量並抽牌，打出攻擊牌造成傷害，技能牌獲得防護或特殊效果，法門牌建立長期能力。積累污染指數可引爆大傷害。</span>
           </article>
           <article>
-            <strong>素材边界</strong>
-            <span>项目包含 AI 生成素材、用户整理素材和原型资源。若进入正式发行或商业化阶段，需要重新确认素材授权或替换为自有资产。</span>
+            <strong>關於中心</strong>
+            <span>嘉義縣海洋教育中心致力於推廣海洋教育，培養學生對海洋生態的認識與保育意識，守護台灣珍貴的海洋資源。</span>
           </article>
         </div>
-        <p className="about-notice">署名建议：夜巡录：荒庙篇，由歸藏 × Codex 联合开发。</p>
+        <p className="about-notice">嘉義縣海洋教育中心</p>
         <div className="title-actions">
           <button className="primary-command" type="button" onClick={onBack}>
             <SkipForward /> 返回
           </button>
           <button className="secondary-command title-about-command" type="button" onClick={onHome}>
-            <Home /> 回到首页
+            <Home /> 回到首頁
           </button>
         </div>
       </div>
@@ -441,9 +442,9 @@ function LoadingScreen({ difficulty }: { difficulty: Difficulty }) {
     <section className="loading-view">
       <video className="scene-loop-video loading-loop-video" src={sceneLoopVideoUrl} autoPlay loop muted playsInline />
       <div className="loading-copy">
-        <p className="eyebrow">入夜</p>
-        <h2>雾门将开</h2>
-        <span>{option.name}难度</span>
+        <p className="eyebrow">出航準備</p>
+        <h2>任務即將開始</h2>
+        <span>{option.name}難度</span>
       </div>
       <div className="loading-thread" />
     </section>
@@ -473,9 +474,9 @@ function MapScreen({ game, onChoose }: { game: GameState; onChoose: (nodeId: str
     <section className="route-view">
       <div className="route-map-panel">
         <div className="route-header">
-          <p className="eyebrow">路线选择</p>
-          <h2>夜路分岔</h2>
-          <p>每个节点只通向几条后路。想打精英、找休整、进阴市，都要提前看两步。</p>
+          <p className="eyebrow">路線選擇</p>
+          <h2>海域地圖</h2>
+          <p>每個節點只通向幾條後路。想打精英、找補給、進漁港，都要提前看兩步。</p>
         </div>
         <div className="branch-map" style={{ "--map-rows": routeNames.length } as CSSProperties}>
           <svg className="branch-links" viewBox={`0 0 ${mapWidth} ${mapHeight}`} preserveAspectRatio="none" aria-hidden="true">
@@ -568,7 +569,7 @@ function CombatScreen({ game, onPlayCard, onEndTurn }: { game: GameState; onPlay
   const dragPoint = drag ? { x: drag.originX + drag.dx, y: drag.originY + drag.dy } : null;
   const hoverTarget = dragPoint ? dragHitTarget(dragPoint) : null;
   const targetHot = Boolean(expectedTarget && hoverTarget === expectedTarget);
-  const dropHint = expectedTarget === "enemy" ? "拖到妖物身上施放" : expectedTarget === "player" ? "拖到自己身上施放" : "拖到目标身上施放";
+  const dropHint = expectedTarget === "enemy" ? "拖到目標身上施放" : expectedTarget === "player" ? "拖到自己身上施放" : "拖到目標身上施放";
 
   const beginDrag = (card: CardInstance, event: ReactPointerEvent<HTMLButtonElement>) => {
     if (cardDef(card).unplayable) return;
@@ -637,14 +638,14 @@ function CombatScreen({ game, onPlayCard, onEndTurn }: { game: GameState; onPlay
       <CombatStage combat={combat} player={player} />
       <video className="combat-scene-loop" src={sceneLoopVideoUrl} autoPlay loop muted playsInline />
       <div className={`combat-overlay ${drag ? "drag-active" : ""} ${expectedTarget ? `expects-${expectedTarget}` : ""} ${targetHot ? "target-hot" : ""}`}>
-        <div className={`play-drop-zone ${drag ? "visible" : ""} ${targetHot ? "hot" : ""}`}>{targetHot ? "松手施放" : dropHint}</div>
+        <div className={`play-drop-zone ${drag ? "visible" : ""} ${targetHot ? "hot" : ""}`}>{targetHot ? "放開施放" : dropHint}</div>
         <div className={`target-ghost target-player ${expectedTarget === "player" ? "visible" : ""} ${targetHot && hoverTarget === "player" ? "hot" : ""}`}>
           <Shield />
-          <span>加护预备</span>
+          <span>加護預備</span>
         </div>
         <div className={`target-ghost target-enemy ${expectedTarget === "enemy" ? "visible" : ""} ${targetHot && hoverTarget === "enemy" ? "hot" : ""}`}>
           <Swords />
-          <span>受击预热</span>
+          <span>施放攻擊</span>
         </div>
         {burst && (
           <div key={burst.id} className={`target-burst target-burst-${burst.target} burst-${burst.kind}`}>
@@ -654,25 +655,25 @@ function CombatScreen({ game, onPlayCard, onEndTurn }: { game: GameState; onPlay
         <div className={`actor-panel player-panel ${expectedTarget === "player" ? "preview-target" : ""} ${targetHot && hoverTarget === "player" ? "target-hot" : ""}`}>
           <HealthStrip current={player.hp} max={player.maxHp} />
           <div className="status-stack">
-            <StatusBadge icon={<img src={blockBadgeUrl} alt="" draggable={false} />} text={`格挡 ${player.block}`} />
-            <StatusBadge icon={<img src={incenseBadgeUrl} alt="" draggable={false} />} text={`香火 ${player.incense}`} />
-            {player.weak > 0 && <StatusBadge text={`虚弱 ${player.weak}`} />}
-            {player.powers.nightEye && <StatusBadge text="夜眼" />}
-            {player.powers.citygod && <StatusBadge text="城隍" />}
+            <StatusBadge icon={<img src={blockBadgeUrl} alt="" draggable={false} />} text={`防護 ${player.block}`} />
+            <StatusBadge icon={<img src={incenseBadgeUrl} alt="" draggable={false} />} text={`潮力 ${player.incense}`} />
+            {player.weak > 0 && <StatusBadge text={`虛弱 ${player.weak}`} />}
+            {player.powers.nightEye && <StatusBadge text="監測儀" />}
+            {player.powers.citygod && <StatusBadge text="中心支援" />}
           </div>
         </div>
         <div className={`actor-panel enemy-panel ${expectedTarget === "enemy" ? "preview-target" : ""} ${targetHot && hoverTarget === "enemy" ? "target-hot" : ""}`}>
           <div className="intent-plaque">
-            <span>意图</span>
+          <span>行動</span>
             <strong>{intentText(enemy.intent)}</strong>
           </div>
           <HealthStrip current={enemy.hp} max={enemy.maxHp} enemy />
           <div className="status-stack">
-            <StatusBadge icon={<img src={sealBadgeUrl} alt="" draggable={false} />} text={`符印 ${enemy.seal}`} />
-            <StatusBadge icon={<img src={blockBadgeUrl} alt="" draggable={false} />} text={`格挡 ${enemy.block}`} />
+            <StatusBadge icon={<img src={sealBadgeUrl} alt="" draggable={false} />} text={`污染 ${enemy.seal}`} />
+            <StatusBadge icon={<img src={blockBadgeUrl} alt="" draggable={false} />} text={`防護 ${enemy.block}`} />
             {enemy.strength > 0 && <StatusBadge text={`力量 ${enemy.strength}`} />}
-            {enemy.weak > 0 && <StatusBadge text={`虚弱 ${enemy.weak}`} />}
-            {enemy.vulnerable > 0 && <StatusBadge text={`易伤 ${enemy.vulnerable}`} />}
+            {enemy.weak > 0 && <StatusBadge text={`虛弱 ${enemy.weak}`} />}
+            {enemy.vulnerable > 0 && <StatusBadge text={`易傷 ${enemy.vulnerable}`} />}
           </div>
         </div>
         <div className="energy-orb">
@@ -680,16 +681,16 @@ function CombatScreen({ game, onPlayCard, onEndTurn }: { game: GameState; onPlay
           <span>/{player.maxEnergy}</span>
         </div>
         <button className="end-turn" type="button" onClick={onEndTurn}>
-          <SkipForward /> 结束回合
+          <SkipForward /> 結束回合
         </button>
-        <div className="pile-counters pile-left" title={`已弃牌 ${combat.discardPile.length}`} aria-label={`已弃牌 ${combat.discardPile.length}`}>
+        <div className="pile-counters pile-left" title={`已棄牌 ${combat.discardPile.length}`} aria-label={`已棄牌 ${combat.discardPile.length}`}>
           <img src={pileDiscardUrl} alt="" draggable={false} />
-          <span>已弃牌</span>
+          <span>已棄牌</span>
           <strong>{combat.discardPile.length}</strong>
         </div>
-        <div className="pile-counters pile-right" title={`牌库 ${combat.drawPile.length}`} aria-label={`牌库 ${combat.drawPile.length}`}>
+        <div className="pile-counters pile-right" title={`牌庫 ${combat.drawPile.length}`} aria-label={`牌庫 ${combat.drawPile.length}`}>
           <img src={pileDrawUrl} alt="" draggable={false} />
-          <span>牌库</span>
+          <span>牌庫</span>
           <strong>{combat.drawPile.length}</strong>
         </div>
         <div className="hand-fan" style={{ "--hand-count": combat.hand.length } as CSSProperties}>
@@ -839,10 +840,10 @@ function dragHitTarget(point: { x: number; y: number }): "player" | "enemy" | nu
 }
 
 function typeLabel(type: string) {
-  if (type === "attack") return "攻击";
+  if (type === "attack") return "攻擊";
   if (type === "skill") return "技能";
-  if (type === "power") return "法门";
-  return "状态";
+  if (type === "power") return "法門";
+  return "狀態";
 }
 
 function CinematicScreen({ game, onContinue }: { game: GameState; onContinue: () => void }) {
@@ -869,7 +870,7 @@ function CinematicScreen({ game, onContinue }: { game: GameState; onContinue: ()
       data-video-slot={videoSrc || cinematic.videoUrl}
       data-poster-slot={posterSrc}
     >
-      <div className="cinematic-scene" aria-label={`${cinematic.enemyName}结算过场参考画面`}>
+      <div className="cinematic-scene" aria-label={`${cinematic.enemyName}戰鬥結算過場`}>
         <div className="cinematic-moon" />
         <img className="cinematic-player" src={playerNightPatrolUrl} alt="" draggable={false} />
         <img className={`cinematic-enemy enemy-${cinematic.enemyArtKey}`} src={enemyArt} alt="" draggable={false} />
@@ -882,28 +883,31 @@ function CinematicScreen({ game, onContinue }: { game: GameState; onContinue: ()
         {shouldTryVideo && (
           <video
             className={`cinematic-video ${videoStarted ? "is-playing" : ""}`}
-            src={videoSrc}
+            src={videoSrc || cinematic.videoUrl}
             poster={posterSrc}
             autoPlay
             playsInline
+            muted
             onPlay={() => setVideoStarted(true)}
+            onCanPlay={(e) => { (e.target as HTMLVideoElement).play().catch(() => setVideoFailed(true)); }}
             onEnded={onContinue}
             onError={() => setVideoFailed(true)}
+            onClick={(e) => { (e.target as HTMLVideoElement).play().catch(() => {}); }}
           />
         )}
         {(videoFailed || !videoStarted) && (
           <div className="cinematic-static-card">
             <strong>{cinematic.enemyName}</strong>
-            <span>{isBoss ? "殿门外的雾终于开始退去。" : "残火停在半空，铜钱在灰里发亮。"}</span>
+            <span>{isBoss ? "外海霧散，引擎熄滅，海面恢復平靜。" : "威脅退散，海面重歸清澈。"}</span>
           </div>
         )}
       </div>
       <aside className="settlement-panel">
-        <p className="eyebrow">战斗结算</p>
-        <h3>{isBoss ? "第一大关完成" : "战利品待领取"}</h3>
+        <p className="eyebrow">戰鬥結算</p>
+        <h3>{isBoss ? "最終關卡完成" : "補給待領取"}</h3>
         <div className="settlement-line">
           <img src={goldIconUrl} alt="" draggable={false} />
-          <span>{cinematic.rewardSummary ? `获得 ${cinematic.rewardSummary.gold} 金` : "山君伏诛，雾散天明"}</span>
+          <span>{cinematic.rewardSummary ? `獲得 ${cinematic.rewardSummary.gold} 補給費` : "非法母船引擎熄滅，海面恢復平靜"}</span>
         </div>
         {cinematic.rewardSummary?.relicName && (
           <div className="settlement-line">
@@ -919,11 +923,11 @@ function CinematicScreen({ game, onContinue }: { game: GameState; onContinue: ()
           </div>
         )}
         <div className="settlement-flavor">
-          <strong>夜巡记</strong>
-          <span>{isBoss ? "正殿梁上落下第一缕晨光，旧香灰没有再动。" : "妖气退开，地上只剩几枚温热的铜钱。"}</span>
+          <strong>巡查記錄</strong>
+          <span>{isBoss ? "外海霧散，引擎聲熄滅，海面恢復了平靜。" : "威脅退散，海面重歸清澈，補給已在船上備妥。"}</span>
         </div>
         <button className="primary-command" type="button" onClick={onContinue}>
-          <SkipForward /> {isBoss ? "进入通关页" : "领取战利品"}
+          <SkipForward /> {isBoss ? "進入通關頁" : "領取補給"}
         </button>
       </aside>
     </section>
@@ -936,9 +940,9 @@ function RewardScreen({ game, onTake, onSkip }: { game: GameState; onTake: (uid:
     <section className="choice-view">
       <AmbientSceneVideo />
       <div className="choice-header">
-        <p className="eyebrow">战斗奖励</p>
+        <p className="eyebrow">戰鬥獎勵</p>
         <h2>{reward.title}</h2>
-        <p>获得 {reward.gold} 金。{reward.relic ? `遗物 ${reward.relic.name} 已入囊。` : "这次没有遗物。"} 选一张牌，或让牌组保持清瘦。</p>
+        <p>獲得 {reward.gold} 補給費。{reward.relic ? `遺物 ${reward.relic.name} 已取得。` : "這次沒有遺物。"} 選一張技能牌，或讓牌組保持精簡。</p>
       </div>
       {reward.relic && <div className="relic-banner"><strong>{reward.relic.name}</strong>{reward.relic.text}</div>}
       <div className="reward-row">
@@ -946,7 +950,7 @@ function RewardScreen({ game, onTake, onSkip }: { game: GameState; onTake: (uid:
           <GameCard key={card.uid} card={card} mode="reward" onClick={() => onTake(card.uid)} />
         ))}
       </div>
-      <button className="secondary-command" type="button" onClick={onSkip}>跳过卡牌</button>
+      <button className="secondary-command" type="button" onClick={onSkip}>跳過技能牌</button>
       <LogRail logs={game.log} />
     </section>
   );
@@ -958,7 +962,7 @@ function EventScreen({ game, onChoice }: { game: GameState; onChoice: (choice: s
     <section className="choice-view event-view">
       <AmbientSceneVideo />
       <div className="choice-header">
-        <p className="eyebrow">怪事</p>
+        <p className="eyebrow">海上見聞</p>
         <h2>{event.title}</h2>
         <p>{event.body}</p>
       </div>
@@ -980,13 +984,13 @@ function RestScreen({ onHeal, onUpgrade }: { onHeal: () => void; onUpgrade: () =
     <section className="choice-view">
       <AmbientSceneVideo />
       <div className="choice-header">
-        <p className="eyebrow">休整</p>
-        <h2>残灯休整</h2>
-        <p>夜风暂止，破灯还亮。你可以疗伤，也可以把一张牌磨到更顺手。</p>
+        <p className="eyebrow">補給</p>
+        <h2>中心補給站</h2>
+        <p>回到嘉義縣海洋教育中心稍作休整。你可以療傷，也可以強化一張裝備。</p>
       </div>
       <div className="decision-grid">
-        <button type="button" className="decision-card" onClick={onHeal}><strong>静坐调息</strong><span>回复最大生命 30%。</span></button>
-        <button type="button" className="decision-card" onClick={onUpgrade}><strong>朱砂重描</strong><span>升级 1 张牌。</span></button>
+        <button type="button" className="decision-card" onClick={onHeal}><strong>補充裝備</strong><span>回復最大生命 30%。</span></button>
+        <button type="button" className="decision-card" onClick={onUpgrade}><strong>研習技能</strong><span>強化 1 張牌。</span></button>
       </div>
     </section>
   );
@@ -1011,30 +1015,30 @@ function ShopScreen({
     <section className="choice-view">
       <AmbientSceneVideo />
       <div className="choice-header">
-        <p className="eyebrow">商店</p>
-        <h2>阴市灯摊</h2>
-        <p>摊主戴着没有眼孔的面具，算盘珠子自己响。你有 {gold} 金。</p>
+        <p className="eyebrow">補給鋪</p>
+        <h2>漁港裝備鋪</h2>
+        <p>老闆從倉庫翻出各種裝備，價格公道。你有 {gold} 補給費。</p>
       </div>
       <div className="shop-grid">
         {shop.cards.map((item, index) => (
           <button key={item.card.uid} className="shop-card" type="button" disabled={item.sold || gold < item.cost} onClick={() => onBuyCard(index)}>
             <strong>{cardName(item.card)}</strong>
             <span>{cardText(item.card)}</span>
-            <em>{item.sold ? "已售" : `${item.cost} 金`}</em>
+            <em>{item.sold ? "已售出" : `${item.cost} 補給費`}</em>
           </button>
         ))}
         <button className="shop-card relic-shop-card" type="button" disabled={shop.relic.sold || !shop.relic.relic || gold < shop.relic.cost} onClick={onBuyRelic}>
-          <strong>{shop.relic.relic?.name || "空摊"}</strong>
-          <span>{shop.relic.relic?.text || "没有新的遗物。"}</span>
-          <em>{shop.relic.sold ? "已售" : `${shop.relic.cost} 金`}</em>
+          <strong>{shop.relic.relic?.name || "無庫存"}</strong>
+          <span>{shop.relic.relic?.text || "目前沒有新遺物。"}</span>
+          <em>{shop.relic.sold ? "已售出" : `${shop.relic.cost} 補給費`}</em>
         </button>
         <button className="shop-card" type="button" disabled={gold < shop.removeCost} onClick={onRemove}>
-          <strong>烧旧牌</strong>
-          <span>请摊主替你烧掉一张不再需要的牌。</span>
-          <em>{shop.removeCost} 金</em>
+          <strong>報廢裝備</strong>
+          <span>請店主幫你淘汰一張不再需要的技能牌。</span>
+          <em>{shop.removeCost} 補給費</em>
         </button>
       </div>
-      <button className="secondary-command" type="button" onClick={onLeave}>离开阴市</button>
+      <button className="secondary-command" type="button" onClick={onLeave}>離開裝備鋪</button>
     </section>
   );
 }
@@ -1074,8 +1078,8 @@ function DeckPickScreen({
         </div>
       ) : (
         <div className="empty-panel">
-          <p>没有可选择的牌。</p>
-          {emptyAction && <button type="button" onClick={emptyAction}>继续</button>}
+          <p>沒有可選擇的技能牌。</p>
+          {emptyAction && <button type="button" onClick={emptyAction}>繼續</button>}
         </div>
       )}
     </section>
@@ -1083,18 +1087,18 @@ function DeckPickScreen({
 }
 
 function logTone(log: string) {
-  if (/获得|买下|金币|遗物|卡牌|金/.test(log)) return { label: "收获", tone: "gain" };
-  if (/造成|攻击|伤害|虚弱|易伤|符印|格挡|力量|塞入/.test(log)) return { label: "战斗", tone: "combat" };
-  if (/回复|升级|烧掉|休整|残灯/.test(log)) return { label: "整备", tone: "ready" };
-  if (/狐|井|书生|纸契|怪事|阴市/.test(log)) return { label: "怪事", tone: "event" };
-  return { label: "行路", tone: "route" };
+  if (/獲得|買下|補給費|遺物|技能牌|金/.test(log)) return { label: "收穫", tone: "gain" };
+  if (/造成|攻擊|傷害|虛弱|易傷|污染|防護|力量|塞入/.test(log)) return { label: "戰鬥", tone: "combat" };
+  if (/回復|強化|報廢|補給站|休整/.test(log)) return { label: "整備", tone: "ready" };
+  if (/海龜|老漁翁|燈塔|研究員|漁港|海上見聞/.test(log)) return { label: "見聞", tone: "event" };
+  return { label: "巡查", tone: "route" };
 }
 
 function LogRail({ logs }: { logs: string[] }) {
   return (
     <aside className="log-rail">
-      <strong>夜巡札记</strong>
-      {logs.length === 0 && <span className="log-entry log-route"><small>行路</small><b>纸灯未亮，夜路还没有留下痕迹。</b></span>}
+      <strong>巡查日誌</strong>
+      {logs.length === 0 && <span className="log-entry log-route"><small>巡查</small><b>任務剛剛開始，海面還沒有留下任何紀錄。</b></span>}
       {logs.map((log, index) => {
         const meta = logTone(log);
         return (

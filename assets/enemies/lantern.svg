@@ -1,17 +1,60 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="420" height="420" viewBox="0 0 420 420" role="img" aria-label="灯笼精">
+<svg xmlns="http://www.w3.org/2000/svg" width="420" height="420" viewBox="0 0 420 420" role="img" aria-label="飄流垃圾堆">
   <defs>
-    <radialGradient id="g" cx="50%" cy="45%" r="45%">
-      <stop offset="0" stop-color="#e6a14a"/>
-      <stop offset=".55" stop-color="#a53a2f"/>
-      <stop offset="1" stop-color="#301719"/>
+    <radialGradient id="bg" cx="50%" cy="60%" r="50%">
+      <stop offset="0" stop-color="#1a4a3a"/>
+      <stop offset="1" stop-color="#0a1f2e"/>
     </radialGradient>
-    <filter id="s"><feDropShadow dx="0" dy="18" stdDeviation="14" flood-color="#000" flood-opacity=".45"/></filter>
+    <radialGradient id="mass" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#8fa88a"/>
+      <stop offset="0.6" stop-color="#4a6e52"/>
+      <stop offset="1" stop-color="#2a3e2f"/>
+    </radialGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="shadow"><feDropShadow dx="0" dy="12" stdDeviation="10" flood-color="#000" flood-opacity=".5"/></filter>
   </defs>
-  <g filter="url(#s)">
-    <path d="M210 58 C170 98 145 138 145 205 C145 289 175 342 210 360 C245 342 275 289 275 205 C275 138 250 98 210 58 Z" fill="url(#g)" stroke="#d5b56b" stroke-width="8"/>
-    <path d="M151 181 H269 M151 231 H269 M165 110 C190 126 230 126 255 110 M165 318 C190 300 230 300 255 318" fill="none" stroke="#f0ce7a" stroke-opacity=".45" stroke-width="6"/>
-    <path d="M190 198 C199 188 221 188 230 198 M182 246 C198 264 222 264 238 246" fill="none" stroke="#110b0b" stroke-width="9" stroke-linecap="round"/>
-    <path d="M210 38 V72 M180 44 H240 M210 355 V392" stroke="#cba15a" stroke-width="8" stroke-linecap="round"/>
-    <path d="M178 386 C198 402 222 402 242 386" fill="none" stroke="#cba15a" stroke-width="6" stroke-linecap="round"/>
+  <!-- 海面波紋背景 -->
+  <ellipse cx="210" cy="370" rx="160" ry="22" fill="#0d3a5c" opacity=".6"/>
+  <path d="M60 370 Q130 358 210 370 Q290 382 360 370" fill="none" stroke="#1e6a9a" stroke-width="3" opacity=".5"/>
+  <path d="M80 385 Q155 373 210 385 Q270 397 340 385" fill="none" stroke="#1e6a9a" stroke-width="2" opacity=".3"/>
+
+  <!-- 主體垃圾堆 -->
+  <g filter="url(#shadow)">
+    <ellipse cx="210" cy="280" rx="120" ry="70" fill="url(#mass)"/>
+    <!-- 垃圾雜物堆疊 -->
+    <ellipse cx="180" cy="230" rx="70" ry="55" fill="#5a7a60" opacity=".9"/>
+    <ellipse cx="240" cy="220" rx="60" ry="50" fill="#4d6e55" opacity=".85"/>
+    <ellipse cx="210" cy="190" rx="55" ry="45" fill="#6a8a6f" opacity=".9"/>
+
+    <!-- 塑膠袋 -->
+    <path d="M155 210 C145 195 150 175 165 172 C175 170 185 180 183 195 C181 208 170 215 155 210 Z" fill="#b8d4c8" opacity=".7"/>
+    <path d="M255 200 C265 185 275 178 285 182 C295 188 292 205 280 212 C268 218 255 212 255 200 Z" fill="#9fc4b8" opacity=".65"/>
+
+    <!-- 纏繞漁網 -->
+    <path d="M130 240 L180 220 L230 240 L280 220 L320 240" fill="none" stroke="#c8a84a" stroke-width="3" stroke-dasharray="8,4" opacity=".8"/>
+    <path d="M140 255 L185 238 L235 255 L285 238 L315 255" fill="none" stroke="#c8a84a" stroke-width="2" stroke-dasharray="6,4" opacity=".6"/>
+    <path d="M155 225 L160 270 M200 218 L202 268 M245 220 L243 265 M285 228 L282 260" fill="none" stroke="#c8a84a" stroke-width="2" opacity=".5"/>
+
+    <!-- 寶特瓶 -->
+    <rect x="188" y="195" width="18" height="30" rx="4" fill="#a8d4e8" opacity=".75" transform="rotate(-15,197,210)"/>
+    <rect x="225" y="200" width="16" height="26" rx="3" fill="#c4e4f4" opacity=".7" transform="rotate(20,233,213)"/>
+    <rect x="162" y="248" width="14" height="22" rx="3" fill="#b0cce0" opacity=".7" transform="rotate(-8,169,259)"/>
+
+    <!-- 泡沫和碎片 -->
+    <circle cx="170" cy="175" r="8" fill="#e8f4e0" opacity=".6"/>
+    <circle cx="245" cy="168" r="6" fill="#d8eedc" opacity=".55"/>
+    <circle cx="290" cy="210" r="7" fill="#c8e8d4" opacity=".5"/>
+    <circle cx="145" cy="258" r="5" fill="#d4ecdc" opacity=".6"/>
+
+    <!-- 污染暗影效果 -->
+    <ellipse cx="210" cy="300" rx="100" ry="30" fill="#1a3020" opacity=".5"/>
   </g>
+
+  <!-- 頂部眼睛（妖氣感） -->
+  <ellipse cx="195" cy="182" rx="12" ry="8" fill="#0a0a0a" opacity=".8"/>
+  <ellipse cx="228" cy="178" rx="11" ry="7" fill="#0a0a0a" opacity=".8"/>
+  <circle cx="197" cy="182" r="4" fill="#2aaa66" opacity=".9" filter="url(#glow)"/>
+  <circle cx="230" cy="178" r="3.5" fill="#2aaa66" opacity=".9" filter="url(#glow)"/>
 </svg>

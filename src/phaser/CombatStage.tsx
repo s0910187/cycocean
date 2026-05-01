@@ -2,7 +2,7 @@ import Phaser from "phaser";
 import { useEffect, useRef } from "react";
 import type { CombatState, PlayerState } from "../game/types";
 
-const nightTempleBattleUrl = new URL("../../assets/generated/backgrounds/night-temple-battle.png", import.meta.url).href;
+const sceneLoopVideoUrl = new URL("../../assets/generated/backgrounds/night-temple-loop.mp4", import.meta.url).href;
 const playerNightPatrolUrl = new URL("../../assets/generated/characters/player-night-patrol.png", import.meta.url).href;
 const lanternUrl = new URL("../../assets/generated/enemies/lantern.png", import.meta.url).href;
 const waterghostUrl = new URL("../../assets/generated/enemies/waterghost.png", import.meta.url).href;
@@ -53,7 +53,6 @@ interface StageSnapshot {
 }
 
 class NightBattleScene extends Phaser.Scene {
-  private bg?: Phaser.GameObjects.Image;
   private enemy?: Phaser.GameObjects.Image;
   private player?: Phaser.GameObjects.Container;
   private playerSprite?: Phaser.GameObjects.Image;
@@ -75,7 +74,6 @@ class NightBattleScene extends Phaser.Scene {
   }
 
   preload() {
-    this.load.image("huangmiao-bg", nightTempleBattleUrl);
     this.load.image("player-night-patrol", playerNightPatrolUrl);
     Object.entries(ENEMY_ART_URLS).forEach(([key, url]) => {
       this.load.image(`enemy-${key}`, url);
@@ -84,8 +82,7 @@ class NightBattleScene extends Phaser.Scene {
 
   create() {
     const { width, height } = this.scale;
-    this.bg = this.add.image(width / 2, height / 2, "huangmiao-bg").setDisplaySize(width, height);
-    this.add.rectangle(width / 2, height / 2, width, height, 0x050707, 0.18);
+    this.add.rectangle(width / 2, height / 2, width, height, 0x050707, 0.05);
     this.add.ellipse(width / 2, height * 0.83, width * 0.82, height * 0.16, 0x080909, 0.36);
     this.createPlayer();
     this.enemy = this.add.image(width * 0.74, height * 0.6, "enemy-lantern");
@@ -142,26 +139,12 @@ class NightBattleScene extends Phaser.Scene {
   }
 
   private createMist() {
-    const { width, height } = this.scale;
-    const particles = this.add.particles(0, 0, "huangmiao-bg", {
-      x: { min: -120, max: width + 120 },
-      y: { min: height * 0.25, max: height * 0.72 },
-      lifespan: 9000,
-      speedX: { min: 8, max: 22 },
-      speedY: { min: -4, max: 6 },
-      alpha: { start: 0.032, end: 0 },
-      scale: { start: 0.08, end: 0.18 },
-      quantity: 1,
-      frequency: 420,
-      blendMode: Phaser.BlendModes.ADD,
-    });
-    this.fog = particles;
+    // 移除舊廟宇霧氣粒子，改用純透明
   }
 
   private refresh() {
-    if (!this.snapshot || !this.enemy || !this.bg) return;
+    if (!this.snapshot || !this.enemy) return;
     const { width, height } = this.scale;
-    this.bg.setDisplaySize(width, height).setPosition(width / 2, height / 2);
     if (this.snapshot.enemyKey !== this.lastEnemyKey) {
       this.enemy.setTexture(`enemy-${this.snapshot.enemyKey}`);
       this.lastEnemyKey = this.snapshot.enemyKey;
@@ -178,7 +161,7 @@ class NightBattleScene extends Phaser.Scene {
     this.playerShadow?.setSize(width * 0.18, height * 0.055);
     this.enemyName?.setText(this.snapshot.enemyName).setPosition(width * 0.74, height * 0.3);
     this.sealText
-      ?.setText(`符印 ${this.snapshot.enemySeal}   格挡 ${this.snapshot.enemyBlock}`)
+      ?.setText(`污染 ${this.snapshot.enemySeal}   防護 ${this.snapshot.enemyBlock}`)
       .setPosition(width * 0.74, height * 0.38);
     this.intentText?.setText(this.snapshot.enemyIntent).setPosition(width * 0.74, height * 0.22);
     if (this.snapshot.pulse !== this.lastPulse) {
@@ -224,6 +207,22 @@ class NightBattleScene extends Phaser.Scene {
 export function CombatStage({ combat, player }: CombatStageProps) {
   const hostRef = useRef<HTMLDivElement | null>(null);
   const gameRef = useRef<Phaser.Game | null>(null);
+  const wrapRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    // 在 Phaser canvas 下方插入 video 背景
+    const wrap = wrapRef.current;
+    if (!wrap) return;
+    const vid = document.createElement("video");
+    vid.src = sceneLoopVideoUrl;
+    vid.autoplay = true;
+    vid.loop = true;
+    vid.muted = true;
+    vid.playsInline = true;
+    vid.style.cssText = "position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;";
+    wrap.prepend(vid);
+    return () => { vid.remove(); };
+  }, []);
 
   useEffect(() => {
     if (!hostRef.current || gameRef.current) return;
@@ -256,7 +255,7 @@ export function CombatStage({ combat, player }: CombatStageProps) {
       enemyMaxHp: combat.enemy.maxHp,
       enemySeal: combat.enemy.seal,
       enemyBlock: combat.enemy.block,
-      enemyIntent: combat.enemy.intent?.label || "敌意未明",
+      enemyIntent: combat.enemy.intent?.label || "意圖未明",
       playerHp: player.hp,
       playerMaxHp: player.maxHp,
       playerBlock: player.block,
@@ -274,5 +273,5 @@ export function CombatStage({ combat, player }: CombatStageProps) {
     return () => window.clearTimeout(id);
   }, [combat, player]);
 
-  return <div ref={hostRef} className="phaser-stage" aria-hidden="true" />;
+  return <div ref={wrapRef} style={{position:"relative",width:"100%",height:"100%"}}><div ref={hostRef} className="phaser-stage" style={{position:"relative",zIndex:1}} aria-hidden="true" /></div>;
 }
