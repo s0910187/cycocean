@@ -3,7 +3,7 @@ import type { CardDef, EnemyTemplate, EventDef, NodeType, RelicDef } from "./typ
 export const CARD_DEFS: Record<string, CardDef> = {
   strike: {
     id: "strike",
-    name: "清網行動",
+    name: "淨灘行動",
     type: "attack",
     rarity: "basic",
     cost: 1,
@@ -11,7 +11,7 @@ export const CARD_DEFS: Record<string, CardDef> = {
   },
   defend: {
     id: "defend",
-    name: "防護浮具",
+    name: "穿上救生衣",
     type: "skill",
     rarity: "basic",
     cost: 1,
@@ -19,7 +19,7 @@ export const CARD_DEFS: Record<string, CardDef> = {
   },
   zhusha: {
     id: "zhusha",
-    name: "污染標記",
+    name: "塑膠採樣",
     type: "attack",
     rarity: "basic",
     cost: 1,
@@ -27,7 +27,7 @@ export const CARD_DEFS: Record<string, CardDef> = {
   },
   taomu: {
     id: "taomu",
-    name: "快艇衝撞",
+    name: "巡邏艇出動",
     type: "attack",
     rarity: "common",
     cost: 1,
@@ -35,7 +35,7 @@ export const CARD_DEFS: Record<string, CardDef> = {
   },
   cloudstep: {
     id: "cloudstep",
-    name: "潮流借力",
+    name: "順著潮流",
     type: "skill",
     rarity: "common",
     cost: 0,
@@ -51,7 +51,7 @@ export const CARD_DEFS: Record<string, CardDef> = {
   },
   golden: {
     id: "golden",
-    name: "防護網",
+    name: "紅樹林護盾",
     type: "skill",
     rarity: "common",
     cost: 1,
@@ -76,7 +76,7 @@ export const CARD_DEFS: Record<string, CardDef> = {
   },
   thunder: {
     id: "thunder",
-    name: "聲納衝擊",
+    name: "聲納定位",
     type: "attack",
     rarity: "common",
     cost: 2,
@@ -84,7 +84,7 @@ export const CARD_DEFS: Record<string, CardDef> = {
   },
   bell: {
     id: "bell",
-    name: "纏繞浮繩",
+    name: "廢棄漁線",
     type: "skill",
     rarity: "common",
     cost: 1,
@@ -92,7 +92,7 @@ export const CARD_DEFS: Record<string, CardDef> = {
   },
   fog: {
     id: "fog",
-    name: "水下視野",
+    name: "戴上蛙鏡",
     type: "skill",
     rarity: "common",
     cost: 1,
@@ -108,7 +108,7 @@ export const CARD_DEFS: Record<string, CardDef> = {
   },
   burn: {
     id: "burn",
-    name: "污染爆發",
+    name: "減塑大作戰",
     type: "attack",
     rarity: "uncommon",
     cost: 1,
@@ -116,7 +116,7 @@ export const CARD_DEFS: Record<string, CardDef> = {
   },
   paper: {
     id: "paper",
-    name: "誘餌浮標",
+    name: "浮標警示",
     type: "skill",
     rarity: "uncommon",
     cost: 1,
@@ -124,7 +124,7 @@ export const CARD_DEFS: Record<string, CardDef> = {
   },
   breakEvil: {
     id: "breakEvil",
-    name: "執法扣押",
+    name: "海巡查獲",
     type: "attack",
     rarity: "uncommon",
     cost: 2,
@@ -132,7 +132,7 @@ export const CARD_DEFS: Record<string, CardDef> = {
   },
   mirror: {
     id: "mirror",
-    name: "衛星標記",
+    name: "拍照記錄",
     type: "skill",
     rarity: "uncommon",
     cost: 1,
@@ -140,7 +140,7 @@ export const CARD_DEFS: Record<string, CardDef> = {
   },
   refine: {
     id: "refine",
-    name: "屏息潛水",
+    name: "憋氣衝刺",
     type: "skill",
     rarity: "uncommon",
     cost: 0,
@@ -149,7 +149,7 @@ export const CARD_DEFS: Record<string, CardDef> = {
   },
   scripture: {
     id: "scripture",
-    name: "調閱資料",
+    name: "查閱圖鑑",
     type: "skill",
     rarity: "uncommon",
     cost: 1,
@@ -173,7 +173,7 @@ export const CARD_DEFS: Record<string, CardDef> = {
   },
   citygod: {
     id: "citygod",
-    name: "呼叫中心支援",
+    name: "海洋教育中心",
     type: "power",
     rarity: "rare",
     cost: 2,
@@ -181,7 +181,7 @@ export const CARD_DEFS: Record<string, CardDef> = {
   },
   thunderLaw: {
     id: "thunderLaw",
-    name: "全力清污",
+    name: "全力護海",
     type: "attack",
     rarity: "rare",
     cost: 3,
@@ -189,7 +189,7 @@ export const CARD_DEFS: Record<string, CardDef> = {
   },
   paperBlade: {
     id: "paperBlade",
-    name: "魚叉",
+    name: "噴水驅離",
     type: "attack",
     rarity: "special",
     cost: 0,
@@ -198,7 +198,7 @@ export const CARD_DEFS: Record<string, CardDef> = {
   },
   yinCold: {
     id: "yinCold",
-    name: "污泥",
+    name: "塑膠垃圾",
     type: "status",
     rarity: "status",
     cost: "-",
