@@ -669,7 +669,7 @@ function CombatScreen({ game, onPlayCard, onEndTurn }: { game: GameState; onPlay
           </div>
           <HealthStrip current={enemy.hp} max={enemy.maxHp} enemy />
           <div className="status-stack">
-            <StatusBadge icon={<img src={sealBadgeUrl} alt="" draggable={false} />} text={`污染 ${enemy.seal}`} />
+            <StatusBadge icon={<img src={sealBadgeUrl} alt="" draggable={false} />} text={`清除污染程度 ${enemy.seal}`} />
             <StatusBadge icon={<img src={blockBadgeUrl} alt="" draggable={false} />} text={`防護 ${enemy.block}`} />
             {enemy.strength > 0 && <StatusBadge text={`力量 ${enemy.strength}`} />}
             {enemy.weak > 0 && <StatusBadge text={`虛弱 ${enemy.weak}`} />}
