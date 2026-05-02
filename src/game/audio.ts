@@ -1,4 +1,4 @@
-const bgmUrl = new URL("../../assets/audio/bgm/bronze-snare-crown.mp3", import.meta.url).href;
+const bgmUrl = new URL("../../assets/audio/bgm/tide-deck-vigil.mp3", import.meta.url).href;
 const impactUrl = new URL("../../assets/audio/sfx/impact-body.wav", import.meta.url).href;
 const chargeUrl = new URL("../../assets/audio/sfx/charge-qigong.mp3", import.meta.url).href;
 const fireUrl = new URL("../../assets/audio/sfx/fire-burst.mp3", import.meta.url).href;
