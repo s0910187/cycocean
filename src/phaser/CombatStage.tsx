@@ -29,7 +29,7 @@ const ENEMY_STAGE_SIZE: Record<string, { width: number; height: number; y: numbe
   macaque: { width: 0.3, height: 0.34, y: 0.61 },
   warlock: { width: 0.27, height: 0.47, y: 0.58 },
   foxshade: { width: 0.25, height: 0.46, y: 0.58 },
-  tigerlord: { width: 0.39, height: 0.4, y: 0.59 },
+  tigerlord: { width: 0.28, height: 0.52, y: 0.59 },
 };
 
 interface CombatStageProps {
@@ -155,9 +155,11 @@ class NightBattleScene extends Phaser.Scene {
     this.playerBaseX = width * 0.28;
     this.playerBaseY = height * 0.66;
     this.enemy.setPosition(this.enemyBaseX, this.enemyBaseY);
-    this.enemy.setDisplaySize(width * enemySize.width, height * enemySize.height);
+    const targetH = height * enemySize.height;
+    const scale = targetH / this.enemy.height;
+    this.enemy.setScale(scale);
     this.player?.setPosition(this.playerBaseX, this.playerBaseY);
-    this.playerSprite?.setDisplaySize(width * 0.2, height * 0.48).setFlipX(true);
+    this.playerSprite?.setScale(height * 0.48 / (this.playerSprite.height || 1)).setFlipX(true);
     this.playerShadow?.setSize(width * 0.18, height * 0.055);
     this.enemyName?.setText(this.snapshot.enemyName).setPosition(width * 0.74, height * 0.3);
     this.sealText
