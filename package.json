@@ -15,9 +15,10 @@
     "dev": "vite --host 127.0.0.1",
     "build": "tsc -b && vite build",
     "preview": "vite preview --host 127.0.0.1",
-    "desktop": "npm run build && electron .",
-    "desktop:pack": "npm run build && electron-builder --dir",
-    "desktop:dist": "npm run build && electron-builder --publish never"
+    "desktop": "ELECTRON_BUILD=1 npm run build && electron .",
+    "desktop:pack": "ELECTRON_BUILD=1 npm run build && electron-builder --dir",
+    "desktop:dist": "ELECTRON_BUILD=1 npm run build && electron-builder --publish never",
+    "desktop:win": "cross-env ELECTRON_BUILD=1 npm run build && electron-builder --win --publish never"
   },
   "build": {
     "appId": "com.yexunlu.huangmiao",
@@ -77,6 +78,7 @@
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^6.0.1",
+    "cross-env": "^10.1.0",
     "electron": "^41.3.0",
     "electron-builder": "^26.8.1",
     "typescript": "^5.6.3",
