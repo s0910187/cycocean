@@ -88,6 +88,7 @@ export class RitualAudio {
   }
 
   private playVictoryJingle() {
+    this.init();
     if (!this.ctx || this.muted) return;
     const notes = [523, 659, 784, 1047, 784, 1047, 1319];
     const delays = [0, 0.15, 0.30, 0.48, 0.65, 0.80, 0.95];
@@ -97,6 +98,7 @@ export class RitualAudio {
   }
 
   private playGameoverJingle() {
+    this.init();
     if (!this.ctx || this.muted) return;
     const notes = [392, 349, 311, 262, 220];
     const delays = [0, 0.3, 0.6, 0.95, 1.3];
