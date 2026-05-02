@@ -311,10 +311,10 @@ export const ENEMIES: Record<string, EnemyTemplate> = {
 
 export const NODE_DEFS: Record<NodeType, { name: string; desc: string }> = {
   combat: { name: "海域巡查", desc: "遭遇污染源或入侵物種。驅離後獲得補給與新技能。" },
-  elite: { name: "非法作業現場", desc: "更危險的威脅正在破壞海洋。擊退後必得遺物。" },
+  elite: { name: "非法作業現場", desc: "更危險的威脅正在破壞海洋。擊退後必得保育徽章。" },
   event: { name: "海上見聞", desc: "巡邏途中遇見意外，每個選擇都有代價。" },
   rest: { name: "中心補給站", desc: "回到嘉義縣海洋教育中心補給，療傷或強化裝備。" },
-  shop: { name: "漁港裝備鋪", desc: "花補給費購買技能、遺物，或請店主報廢舊裝備。" },
+  shop: { name: "漁港裝備鋪", desc: "花補給費購買技能、保育徽章，或請店主報廢舊裝備。" },
   boss: { name: "外海決戰", desc: "非法捕鯨母船盤踞在布袋外海，這是最後的任務。" },
 };
 
@@ -325,7 +325,7 @@ export const EVENTS: EventDef[] = [
     body: "沙灘上一隻綠蠵龜被廢棄漁線緊緊纏住，牠的眼睛仍然清澈，像在等待什麼。",
     choices: [
       { id: "wellHeal", title: "花時間救援", desc: "耐心剪除漁線，送牠回海。回復 12 點生命。" },
-      { id: "wellRelic", title: "採樣後通報", desc: "記錄傷勢並呼叫救援隊。失去 7 點生命，獲得 1 件遺物。" },
+      { id: "wellRelic", title: "採樣後通報", desc: "記錄傷勢並呼叫救援隊。失去 7 點生命，獲得 1 件保育徽章。" },
     ],
   },
   {

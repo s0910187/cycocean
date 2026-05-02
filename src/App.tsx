@@ -322,7 +322,7 @@ function TopHud({
             {player ? (
               <>
             <HudChip icon={<img className="hud-asset-icon" src={pileDrawUrl} alt="" draggable={false} />} label={`牌組 ${player.deck.length}`} />
-            <HudChip icon={<img className="hud-asset-icon" src={relicIconUrl} alt="" draggable={false} />} label={`遺物 ${player.relics.length}`} />
+            <HudChip icon={<img className="hud-asset-icon" src={relicIconUrl} alt="" draggable={false} />} label={`保育徽章 ${player.relics.length}`} />
             <HudChip icon={<img className="hud-asset-icon hud-map-icon" src={mapIconUrl} alt="" draggable={false} />} label={`地圖 ${Math.min(game.floor + 1, 8)}/8`} tone="map" />
               </>
             ) : (
@@ -965,7 +965,7 @@ function RewardScreen({ game, onTake, onSkip }: { game: GameState; onTake: (uid:
       <div className="choice-header">
         <p className="eyebrow">戰鬥獎勵</p>
         <h2>{reward.title}</h2>
-        <p>獲得 {reward.gold} 補給費。{reward.relic ? `遺物 ${reward.relic.name} 已取得。` : "這次沒有遺物。"} 選一張技能牌，或讓牌組保持精簡。</p>
+        <p>獲得 {reward.gold} 補給費。{reward.relic ? `保育徽章 ${reward.relic.name} 已取得。` : "這次沒有保育徽章。"} 選一張技能牌，或讓牌組保持精簡。</p>
       </div>
       {reward.relic && <div className="relic-banner"><strong>{reward.relic.name}</strong>{reward.relic.text}</div>}
       <div className="reward-row">
@@ -1052,7 +1052,7 @@ function ShopScreen({
         ))}
         <button className="shop-card relic-shop-card" type="button" disabled={shop.relic.sold || !shop.relic.relic || gold < shop.relic.cost} onClick={onBuyRelic}>
           <strong>{shop.relic.relic?.name || "無庫存"}</strong>
-          <span>{shop.relic.relic?.text || "目前沒有新遺物。"}</span>
+          <span>{shop.relic.relic?.text || "目前沒有新保育徽章。"}</span>
           <em>{shop.relic.sold ? "已售出" : `${shop.relic.cost} 補給費`}</em>
         </button>
         <button className="shop-card" type="button" disabled={gold < shop.removeCost} onClick={onRemove}>
@@ -1110,7 +1110,7 @@ function DeckPickScreen({
 }
 
 function logTone(log: string) {
-  if (/獲得|買下|補給費|遺物|技能牌|金/.test(log)) return { label: "收穫", tone: "gain" };
+  if (/獲得|買下|補給費|保育徽章|技能牌|金/.test(log)) return { label: "收穫", tone: "gain" };
   if (/造成|攻擊|傷害|虛弱|易傷|污染|防護|力量|塞入/.test(log)) return { label: "戰鬥", tone: "combat" };
   if (/回復|強化|報廢|補給站|休整/.test(log)) return { label: "整備", tone: "ready" };
   if (/海龜|老漁翁|燈塔|研究員|漁港|海上見聞/.test(log)) return { label: "見聞", tone: "event" };

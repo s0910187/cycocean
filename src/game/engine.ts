@@ -797,7 +797,7 @@ function createCinematicState(
     combatType === "boss"
       ? "非法捕鯨母船引擎熄滅，沉入布袋外海的深藍。你把識別章別回胸口，遠處燈塔重新亮起。嘉義縣海洋教育中心的任務從未結束——每一片乾淨的海，都是有人守過的結果。"
       : combatType === "elite"
-        ? "非法作業現場淨空，遺物在浪花中浮現。"
+        ? "非法作業現場淨空，保育徽章在浪花中浮現。"
         : "海域恢復平靜，巡邏路線重新暢通。";
   return {
     enemyId: enemy.id,
@@ -861,7 +861,7 @@ function addRelic(state: GameState, id: string) {
   const relic = RELICS.find((item) => item.id === id);
   if (!relic || hasRelic(state, id)) return null;
   player.relics.push(relic);
-  addLog(state, `獲得遺物：${relic.name}。`);
+  addLog(state, `獲得保育徽章：${relic.name}。`);
   if (relic.onGain === "gold60") {
     player.gold += 60;
     addLog(state, "漁港舊錢幣兌換為 60 補給費。");
