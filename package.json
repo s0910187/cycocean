@@ -1,5 +1,5 @@
 {
-  "name": "night-patrol-spire",
+  "name": "cycocean",
   "version": "0.2.1",
   "private": true,
   "description": "志怪题材卡牌构筑 roguelike demo",
@@ -22,8 +22,8 @@
   },
   "build": {
     "appId": "com.yexunlu.huangmiao",
-    "productName": "夜巡录：荒庙篇",
-    "artifactName": "Night-Patrol-${version}-${os}-${arch}.${ext}",
+    "productName": "守浪人：布袋篇",
+    "artifactName": "CyCOcean-${version}-${os}-${arch}.${ext}",
     "asar": true,
     "files": [
       "dist/**/*",

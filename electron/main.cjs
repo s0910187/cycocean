@@ -12,7 +12,7 @@ function createWindow() {
     minWidth: 1180,
     minHeight: 760,
     backgroundColor: "#07100f",
-    title: "夜巡录：荒庙篇",
+    title: "守浪人：布袋篇",
     show: false,
     webPreferences: {
       contextIsolation: true,
