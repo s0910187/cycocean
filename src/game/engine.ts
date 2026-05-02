@@ -109,11 +109,11 @@ export function hpPercent(entity: { hp: number; maxHp: number }) {
 export function intentText(intent: EnemyMove | null) {
   if (!intent) return "意圖不明";
   if (intent.type === "attack") return `${intent.label}：攻擊 ${intent.amount}${intent.hits ? ` x ${intent.hits}` : ""}`;
-  if (intent.type === "block") return `${intent.label}：防護 ${intent.amount}`;
+  if (intent.type === "block") return `${intent.label}：破壞環境指數 ${intent.amount}`;
   if (intent.type === "buff") return `${intent.label}：力量 +${intent.amount}`;
   if (intent.type === "debuff") return `${intent.label}：令你虛弱 ${intent.amount}`;
   if (intent.type === "curse") return `${intent.label}：塞入 ${intent.amount} 張污泥`;
-  if (intent.type === "blockAttack") return `${intent.label}：防護 ${intent.block} 並攻擊 ${intent.amount}`;
+  if (intent.type === "blockAttack") return `${intent.label}：破壞環境指數 ${intent.block} 並攻擊 ${intent.amount}`;
   return intent.label;
 }
 
