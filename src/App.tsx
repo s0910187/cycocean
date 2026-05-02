@@ -69,6 +69,33 @@ const costGemUrls: Record<string, string> = {
   "3": new URL("../assets/vendor/shushan/cost/cost-3.png", import.meta.url).href,
 };
 const playerNightPatrolUrl = new URL("../assets/generated/characters/player-night-patrol.png", import.meta.url).href;
+const cardArtUrls: Record<string, string> = {
+  strike: new URL("../assets/generated/cards/card-strike.png", import.meta.url).href,
+  defend: new URL("../assets/generated/cards/card-defend.png", import.meta.url).href,
+  zhusha: new URL("../assets/generated/cards/card-zhusha.png", import.meta.url).href,
+  taomu: new URL("../assets/generated/cards/card-taomu.png", import.meta.url).href,
+  cloudstep: new URL("../assets/generated/cards/card-cloudstep.png", import.meta.url).href,
+  qingxin: new URL("../assets/generated/cards/card-qingxin.png", import.meta.url).href,
+  golden: new URL("../assets/generated/cards/card-golden.png", import.meta.url).href,
+  incense: new URL("../assets/generated/cards/card-incense.png", import.meta.url).href,
+  windScroll: new URL("../assets/generated/cards/card-windScroll.png", import.meta.url).href,
+  thunder: new URL("../assets/generated/cards/card-thunder.png", import.meta.url).href,
+  bell: new URL("../assets/generated/cards/card-bell.png", import.meta.url).href,
+  fog: new URL("../assets/generated/cards/card-fog.png", import.meta.url).href,
+  command: new URL("../assets/generated/cards/card-command.png", import.meta.url).href,
+  burn: new URL("../assets/generated/cards/card-burn.png", import.meta.url).href,
+  paper: new URL("../assets/generated/cards/card-paper.png", import.meta.url).href,
+  breakEvil: new URL("../assets/generated/cards/card-breakEvil.png", import.meta.url).href,
+  mirror: new URL("../assets/generated/cards/card-mirror.png", import.meta.url).href,
+  refine: new URL("../assets/generated/cards/card-refine.png", import.meta.url).href,
+  scripture: new URL("../assets/generated/cards/card-scripture.png", import.meta.url).href,
+  ashReturn: new URL("../assets/generated/cards/card-ashReturn.png", import.meta.url).href,
+  nightEye: new URL("../assets/generated/cards/card-nightEye.png", import.meta.url).href,
+  citygod: new URL("../assets/generated/cards/card-citygod.png", import.meta.url).href,
+  thunderLaw: new URL("../assets/generated/cards/card-thunderLaw.png", import.meta.url).href,
+  paperBlade: new URL("../assets/generated/cards/card-paperBlade.png", import.meta.url).href,
+  yinCold: new URL("../assets/generated/cards/card-yinCold.png", import.meta.url).href,
+};
 const sceneLoopVideoUrl = new URL("../assets/generated/backgrounds/night-temple-loop.mp4", import.meta.url).href;
 const enemyArtUrls: Record<string, string> = {
   lantern: new URL("../assets/generated/enemies/lantern.png", import.meta.url).href,
@@ -815,12 +842,7 @@ function GameCard({
 
 function cardArtImage(card: CardInstance) {
   const def = cardDef(card);
-  if (def.type === "attack") {
-    return ["strike", "taomu", "paperBlade"].includes(def.id) ? swordCrossUrl : swordFireUrl;
-  }
-  if (def.type === "power") return baguaIconUrl;
-  if (def.type === "status") return hudBloodUrl;
-  return talismanIconUrl;
+  return cardArtUrls[def.id] ?? talismanIconUrl;
 }
 
 function dropTargetForCard(card: CardInstance): "player" | "enemy" | null {
