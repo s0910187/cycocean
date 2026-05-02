@@ -193,7 +193,11 @@ export function App() {
   const player = game.player;
 
   useEffect(() => {
-    audio().setMusicMode(game.screen === "title" || game.screen === "about" ? "title" : "game");
+    const screen = game.screen;
+    if (screen === "title" || screen === "about") audio().setMusicMode("title");
+    else if (screen === "victory") audio().setMusicMode("victory");
+    else if (screen === "gameover") audio().setMusicMode("gameover");
+    else audio().setMusicMode("game");
   }, [game.screen]);
 
   useEffect(
@@ -935,7 +939,7 @@ function CinematicScreen({ game, onContinue }: { game: GameState; onContinue: ()
         {cinematic.rewardSummary?.relicName && (
           <div className="settlement-line">
             <Sparkles />
-            <span>遗物：{cinematic.rewardSummary.relicName}</span>
+            <span>保育徽章：{cinematic.rewardSummary.relicName}</span>
           </div>
         )}
         {reward && (
